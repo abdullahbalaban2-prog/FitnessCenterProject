@@ -2,24 +2,24 @@
 using FitnessCenterProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FitnessCenterProject
 {
     public class Program
     {
-        public static void Main(string[] args)
+        // DİKKAT: Artık async Task Main
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //VERİTABANI BAĞLANTISI VE DbContext
+            // 1) VERİTABANI BAĞLANTISI VE DbContext
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // IDENTITY + ROLLER + ApplicationUser
+            // 2) IDENTITY + ROLLER + ApplicationUser
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
@@ -33,7 +33,7 @@ namespace FitnessCenterProject
 
             var app = builder.Build();
 
-            //HTTP PIPELINE
+            // 4) HTTP PIPELINE
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -52,12 +52,14 @@ namespace FitnessCenterProject
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Rotalar
+            // 5) Rotalar
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.MapRazorPages();
+            
+            await SeedData.InitializeAsync(app.Services);
 
             app.Run();
         }
