@@ -7,7 +7,7 @@ namespace FitnessCenterProject
 {
     public class Program
     {
-        // DİKKAT: Artık async Task Main
+
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -23,9 +23,17 @@ namespace FitnessCenterProject
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
+
+                
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 3;
             })
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 
             // 3) MVC + Razor Pages
             builder.Services.AddControllersWithViews();
@@ -58,7 +66,7 @@ namespace FitnessCenterProject
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.MapRazorPages();
-            
+
             await SeedData.InitializeAsync(app.Services);
 
             app.Run();

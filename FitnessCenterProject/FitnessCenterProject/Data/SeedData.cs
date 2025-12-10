@@ -1,7 +1,7 @@
 ﻿using FitnessCenterProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+
 namespace FitnessCenterProject.Data
 {
     public static class SeedData
@@ -12,54 +12,51 @@ namespace FitnessCenterProject.Data
             var services = scope.ServiceProvider;
 
             var context = services.GetRequiredService<ApplicationDbContext>();
-            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
 
-            // database gerçekten var mı
-            await context.Database.EnsureCreatedAsync();
+            await context.Database.MigrateAsync();
 
-            //roller
-            string[] roles = new[] { "Admin", "Member" };
+            // Roller
+            var adminRole = "Admin";
+            var memberRole = "Member";
 
-            foreach (var roleName in roles)
-            {
-                if (!await roleManager.Roles.AnyAsync(r => r.Name == roleName))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
-                }
-            }
+            if (!await roleManager.RoleExistsAsync(adminRole))
+                await roleManager.CreateAsync(new IdentityRole(adminRole));
 
-            // admin
+            if (!await roleManager.RoleExistsAsync(memberRole))
+                await roleManager.CreateAsync(new IdentityRole(memberRole));
+
+            
             var adminEmail = "b231210049@sakarya.edu.tr";
-            var adminUserName = adminEmail;
+            var adminPassword = "sau";
 
+            
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
             if (adminUser == null)
             {
                 adminUser = new ApplicationUser
                 {
-                    UserName = adminUserName,
+                    UserName = adminEmail,
                     Email = adminEmail,
-                    EmailConfirmed = true,
-                    Name = "Admin Kullanıcı"
+                    Name = "Sistem Yöneticisi"
                 };
 
-                // şifre (sau) kuralı
-                var createResult = await userManager.CreateAsync(adminUser, "sau");
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
 
-                if (createResult.Succeeded)
+                if (!result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(adminUser, "Admin");
-                }
-                else
-                {
-
+                    
+                    throw new Exception("Admin kullanıcısı oluşturulamadı: " +
+                        string.Join(" | ", result.Errors.Select(e => e.Description)));
                 }
             }
-            await context.SaveChangesAsync();
 
+            if (!await userManager.IsInRoleAsync(adminUser, adminRole))
+            {
+                await userManager.AddToRoleAsync(adminUser, adminRole);
+            }
         }
     }
 }
