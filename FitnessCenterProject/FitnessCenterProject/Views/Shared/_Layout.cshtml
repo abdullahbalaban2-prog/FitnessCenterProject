@@ -25,6 +25,26 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
+                        @* Buradan sonrası sadece Admin rolündeki kullanıcılar için görünecek *@
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="FitnessCenters" asp-action="Index">
+                                    Salonlar
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Services" asp-action="Index">
+                                    Hizmetler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Trainers" asp-action="Index">
+                                    Eğitmenler
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

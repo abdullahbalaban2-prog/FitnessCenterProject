@@ -1,0 +1,49 @@
+﻿@model FitnessCenterProject.Models.Trainer
+
+@{
+    ViewData["Title"] = "Eğitmen Sil";
+}
+
+<h1 class="mb-3 text-danger">Eğitmen Sil</h1>
+
+<h4>Bu eğitmeni silmek istediğinize emin misiniz?</h4>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Specialty)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Specialty)
+            </dd>
+
+            <dt class="col-sm-3">
+                Spor Salonu
+            </dt>
+            <dd class="col-sm-9">
+                @Model.FitnessCenter?.Name
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" class="mt-3">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Vazgeç</a>
+</form>
