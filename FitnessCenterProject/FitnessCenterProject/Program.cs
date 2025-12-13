@@ -7,7 +7,6 @@ namespace FitnessCenterProject
 {
     public class Program
     {
-
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -24,18 +23,17 @@ namespace FitnessCenterProject
             {
                 options.SignIn.RequireConfirmedAccount = false;
 
-                
+                // Şifre kurallarını yumuşattık
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 3;
             })
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
-            // 3) MVC + Razor Pages
+            // 3) MVC + Razor Pages + API Controllers
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
@@ -60,13 +58,17 @@ namespace FitnessCenterProject
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // 5) Rotalar
+            // 🔹 Attribute route kullanan API controller'ları için
+            app.MapControllers();
+
+            // 5) MVC Rotaları
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.MapRazorPages();
 
+            // Seed (Admin + örnek veriler)
             await SeedData.InitializeAsync(app.Services);
 
             app.Run();

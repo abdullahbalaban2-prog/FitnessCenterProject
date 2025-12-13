@@ -2,61 +2,97 @@
 
 @{
     ViewData["Title"] = "Yeni Randevu Oluştur";
+
+    // Controller'da ViewBag.Services doldurulmuştu
+    var services = ViewBag.Services as List<FitnessCenterProject.Models.Service>;
 }
 
-<h1 class="mb-3">Yeni Randevu Oluştur</h1>
+<h1 class="mb-4">Yeni Randevu Oluştur</h1>
 
-<hr />
+<form asp-action="Create" method="post" class="row g-3">
+    @* Üye seçimi FORMDA YOK: MemberId gizli olacak *@
+    <input type="hidden" asp-for="MemberId" />
 
-<div class="row">
     <div class="col-md-6">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <!-- Üye seçimi -->
-            <div class="mb-3">
-                <label asp-for="MemberId" class="form-label">Üye</label>
-                <select asp-for="MemberId" class="form-select" asp-items="ViewBag.MemberId">
-                    <option value="">-- Üye Seçin --</option>
-                </select>
-                <span asp-validation-for="MemberId" class="text-danger"></span>
-            </div>
-
-            <!-- Eğitmen seçimi -->
-            <div class="mb-3">
-                <label asp-for="TrainerId" class="form-label">Eğitmen</label>
-                <select asp-for="TrainerId" class="form-select" asp-items="ViewBag.TrainerId">
-                    <option value="">-- Eğitmen Seçin --</option>
-                </select>
-                <span asp-validation-for="TrainerId" class="text-danger"></span>
-            </div>
-
-            <!-- Hizmet seçimi -->
-            <div class="mb-3">
-                <label asp-for="ServiceId" class="form-label">Hizmet</label>
-                <select asp-for="ServiceId" class="form-select" asp-items="ViewBag.ServiceId">
-                    <option value="">-- Hizmet Seçin --</option>
-                </select>
-                <span asp-validation-for="ServiceId" class="text-danger"></span>
-            </div>
-
-            <!-- Başlangıç zamanı -->
-            <div class="mb-3">
-                <label asp-for="StartDateTime" class="form-label"></label>
-                <input asp-for="StartDateTime" class="form-control" type="datetime-local" />
-                <span asp-validation-for="StartDateTime" class="text-danger"></span>
-            </div>
-
-            <!-- Ücret ve Durum formda düzenlenmiyor; controller otomatik hesaplıyor -->
-
-            <button type="submit" class="btn btn-primary">Kaydet</button>
-            <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
-        </form>
+        <label asp-for="ServiceId" class="form-label"></label>
+        <select asp-for="ServiceId" class="form-select" id="serviceSelect">
+            <option value="">-- Hizmet Seçin --</option>
+            @if (services != null)
+            {
+                foreach (var s in services)
+                {
+                    <option value="@s.Id">
+                        @s.Name (@s.DurationMinutes dk / @s.Price.ToString("0.00") ₺)
+                    </option>
+                }
+            }
+        </select>
+        <span asp-validation-for="ServiceId" class="text-danger"></span>
     </div>
-</div>
+
+    <div class="col-md-6">
+        <label asp-for="TrainerId" class="form-label"></label>
+        <select asp-for="TrainerId" class="form-select" id="trainerSelect" disabled>
+            <option value="">-- Önce hizmet seçin --</option>
+        </select>
+        <span asp-validation-for="TrainerId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="StartDateTime" class="form-label"></label>
+        <input asp-for="StartDateTime" class="form-control" type="datetime-local" />
+        <span asp-validation-for="StartDateTime" class="text-danger"></span>
+    </div>
+
+    @* Fiyat ve durum formdan alınmıyor; controller içinde hesaplanıyor *@
+
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-primary">Randevuyu Kaydet</button>
+        <a asp-action="MyAppointments" class="btn btn-secondary ms-2">Randevularım</a>
+    </div>
+</form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Hizmet seçildiğinde, o hizmet için uygun eğitmenleri API'den çek
+        const serviceSelect = document.getElementById('serviceSelect');
+        const trainerSelect = document.getElementById('trainerSelect');
+
+        serviceSelect.addEventListener('change', function () {
+            const serviceId = this.value;
+
+            // Önce dropdown'ı temizle
+            trainerSelect.innerHTML = '<option value="">-- Eğitmen seçin --</option>';
+
+            if (!serviceId) {
+                trainerSelect.disabled = true;
+                return;
+            }
+
+            // API: /api/trainers/by-service/{serviceId}
+            fetch(`/api/trainers/by-service/${serviceId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Eğitmen listesi alınamadı.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    data.forEach(t => {
+                        const opt = document.createElement('option');
+                        opt.value = t.id;
+                        opt.textContent = `${t.fullName} (${t.specialty ?? ''})`;
+                        trainerSelect.appendChild(opt);
+                    });
+
+                    trainerSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error(error);
+                    trainerSelect.disabled = true;
+                });
+        });
+    </script>
 }

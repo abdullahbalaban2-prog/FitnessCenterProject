@@ -1,0 +1,37 @@
+﻿@model IEnumerable<FitnessCenterProject.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Randevularım";
+}
+
+<h1 class="mb-3">Randevularım</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Yeni Randevu Al</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Hizmet</th>
+            <th>Eğitmen</th>
+            <th>Başlangıç</th>
+            <th>Bitiş</th>
+            <th>Ücret</th>
+            <th>Durum</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.Service?.Name</td>
+                <td>@a.Trainer?.FirstName @a.Trainer?.LastName</td>
+                <td>@a.StartDateTime</td>
+                <td>@a.EndDateTime</td>
+                <td>@a.Price</td>
+                <td>@a.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
