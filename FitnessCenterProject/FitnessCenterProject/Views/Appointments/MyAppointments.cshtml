@@ -1,37 +1,78 @@
 ﻿@model IEnumerable<FitnessCenterProject.Models.Appointment>
+@using FitnessCenterProject.Models
 
 @{
     ViewData["Title"] = "Randevularım";
 }
 
-<h1 class="mb-3">Randevularım</h1>
+<h1 class="mb-4">Randevularım</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Yeni Randevu Al</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Hizmet</th>
-            <th>Eğitmen</th>
-            <th>Başlangıç</th>
-            <th>Bitiş</th>
-            <th>Ücret</th>
-            <th>Durum</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var a in Model)
+<div class="card shadow-sm">
+    <div class="card-body">
+        @if (!Model.Any())
         {
-            <tr>
-                <td>@a.Service?.Name</td>
-                <td>@a.Trainer?.FirstName @a.Trainer?.LastName</td>
-                <td>@a.StartDateTime</td>
-                <td>@a.EndDateTime</td>
-                <td>@a.Price</td>
-                <td>@a.Status</td>
-            </tr>
+            <div class="alert alert-info mb-0">
+                Henüz bir randevunuz bulunmuyor.
+                <a asp-action="Create" class="alert-link">Buradan yeni randevu alabilirsiniz.</a>
+            </div>
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tarih / Saat</th>
+                            <th>Hizmet</th>
+                            <th>Eğitmen</th>
+                            <th>Süre</th>
+                            <th>Ücret</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderByDescending(a => a.StartDateTime))
+                        {
+                            <tr>
+                                <td>
+                                    @item.StartDateTime.ToString("dd.MM.yyyy HH:mm")
+                                </td>
+                                <td>
+                                    @item.Service?.Name
+                                </td>
+                                <td>
+                                    @(item.Trainer != null
+                                        ? item.Trainer.FirstName + " " + item.Trainer.LastName
+                                        : "-")
+                                </td>
+                                <td>
+                                    @(item.Service?.DurationMinutes ?? 0) dk
+                                </td>
+                                <td>
+                                    @item.Price.ToString("0.00") ₺
+                                </td>
+                                <td>
+                                    <span class="@(
+                                        item.Status == AppointmentStatus.Pending   ? "badge bg-warning text-dark" :
+                                        item.Status == AppointmentStatus.Approved  ? "badge bg-success" :
+                                        item.Status == AppointmentStatus.Rejected  ? "badge bg-danger" :
+                                        item.Status == AppointmentStatus.Cancelled ? "badge bg-secondary" :
+                                                                                      "badge bg-light text-dark"
+                                    )">
+                                        @item.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Create" class="btn btn-primary">
+        Yeni Randevu Al
+    </a>
+</div>

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using FitnessCenterProject.Data;
 using FitnessCenterProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitnessCenterProject.Controllers
 {
-    // Bu controller'daki TÜM aksiyonlar için giriş zorunlu
     [Authorize]
     public class AppointmentsController : Controller
     {
@@ -21,9 +21,9 @@ namespace FitnessCenterProject.Controllers
             _context = context;
         }
 
-        // ------------------------------------------------------
-        //  ADMIN: TÜM RANDEVULARI GÖR (Appointments/Index)
-        // ------------------------------------------------------
+        // -------------------------------
+        // ADMIN: TÜM RANDEVULAR
+        // -------------------------------
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
@@ -37,18 +37,12 @@ namespace FitnessCenterProject.Controllers
             return View(appointments);
         }
 
-        // ------------------------------------------------------
-        //  ÜYE: SADECE KENDİ RANDEVULARINI GÖRSÜN
-        //  /Appointments/MyAppointments
-        // ------------------------------------------------------
+        // -------------------------------
+        // ÜYE: KENDİ RANDEVULARI
+        // -------------------------------
         public async Task<IActionResult> MyAppointments()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
-                return Challenge();
-            }
 
             var myAppointments = await _context.Appointments
                 .Include(a => a.Service)
@@ -60,106 +54,69 @@ namespace FitnessCenterProject.Controllers
             return View(myAppointments);
         }
 
-        // ------------------------------------------------------
-        //  RANDEVU ALMA SAYFASI (GET)
-        //  /Appointments/Create
-        // ------------------------------------------------------
+        // -------------------------------
+        // CREATE (GET)
+        // -------------------------------
         public async Task<IActionResult> Create()
         {
-            // Create ekranında eğitmen listesi API'den geleceği için
-            // burada sadece hizmet listesini dolduruyoruz.
-            await LoadDropdownsAsync(includeTrainers: false);
+            await LoadServicesAsync(); // ViewBag.Services = List<Service>
+            ViewBag.Trainers = new SelectList(Enumerable.Empty<SelectListItem>());
 
             var model = new Appointment
             {
-                // Öntanımlı: 1 saat sonrası
                 StartDateTime = DateTime.Now.AddHours(1)
             };
 
             return View(model);
         }
 
-        // ------------------------------------------------------
-        //  RANDEVU OLUŞTURMA (POST)
-        // ------------------------------------------------------
+        // -------------------------------
+        // CREATE (POST)
+        // -------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Appointment appointment)
         {
-            // Hata durumunda form tekrar çizilecek → Hizmetler yeniden gelsin
-            await LoadDropdownsAsync(includeTrainers: false);
+            // Sayfa geri dönerse hizmetler yine dolu kalsın
+            await LoadServicesAsync();
 
-            // 1) Giriş yapan kullanıcının Id'si
+            // Trainer dropdown: seçilen ServiceId’ye göre tekrar dolsun (formda eğitmen seçimi kaybolmasın)
+            if (appointment.ServiceId > 0)
+                await LoadTrainersByServiceAsync(appointment.ServiceId, appointment.TrainerId);
+            else
+                ViewBag.Trainers = new SelectList(Enumerable.Empty<SelectListItem>());
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Challenge(); // login sayfasına yönlendir
-            }
+            if (userId == null) return Challenge();
+
             appointment.MemberId = userId;
 
-            // 2) Seçilen hizmeti bul → fiyat ve süreyi buradan al
-            var service = await _context.Services
-                .FirstOrDefaultAsync(s => s.Id == appointment.ServiceId);
-
+            // Servisten fiyat + süre çek
+            var service = await _context.Services.FirstOrDefaultAsync(s => s.Id == appointment.ServiceId);
             if (service == null)
             {
                 ModelState.AddModelError("ServiceId", "Geçerli bir hizmet seçmelisiniz.");
             }
             else
             {
-                // Ücret
                 appointment.Price = service.Price;
-
-                // Bitiş zamanı = başlangıç + hizmet süresi
-                if (appointment.StartDateTime == default)
-                {
-                    ModelState.AddModelError("StartDateTime", "Başlangıç zamanı zorunludur.");
-                }
-                else
-                {
-                    appointment.EndDateTime = appointment
-                        .StartDateTime
-                        .AddMinutes(service.DurationMinutes);
-                }
+                appointment.EndDateTime = appointment.StartDateTime.AddMinutes(service.DurationMinutes);
             }
 
-            // 3) Başlangıçta durum Pending olsun
             appointment.Status = AppointmentStatus.Pending;
 
-            // 4) Eğitmen için çakışan randevu var mı? (aynı zaman aralığında)
-            if (ModelState.IsValid)
-            {
-                bool hasConflict = await _context.Appointments
-                    .AnyAsync(a =>
-                        a.TrainerId == appointment.TrainerId &&
-                        a.Id != appointment.Id &&
-                        // zaman çakışması kontrolü
-                        a.StartDateTime < appointment.EndDateTime &&
-                        appointment.StartDateTime < a.EndDateTime);
-
-                if (hasConflict)
-                {
-                    ModelState.AddModelError(string.Empty,
-                        "Seçilen eğitmen bu zaman aralığında başka bir randevuya sahip.");
-                }
-            }
-
             if (!ModelState.IsValid)
-            {
-                // Hatalar varsa formu aynı şekilde geri göster
                 return View(appointment);
-            }
 
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
 
-            // Kullanıcı kendi randevu listesini görsün
             return RedirectToAction(nameof(MyAppointments));
         }
 
-        // ------------------------------------------------------
-        //  ADMIN: RANDEVU DETAY
-        // ------------------------------------------------------
+        // -------------------------------
+        // ADMIN: DETAILS
+        // -------------------------------
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -169,16 +126,16 @@ namespace FitnessCenterProject.Controllers
                 .Include(a => a.Member)
                 .Include(a => a.Trainer)
                 .Include(a => a.Service)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (appointment == null) return NotFound();
 
             return View(appointment);
         }
 
-        // ------------------------------------------------------
-        //  ADMIN: RANDEVU DÜZENLEME (GET)
-        // ------------------------------------------------------
+        // -------------------------------
+        // ADMIN: EDIT (GET)
+        // -------------------------------
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -187,15 +144,20 @@ namespace FitnessCenterProject.Controllers
             var appointment = await _context.Appointments.FindAsync(id);
             if (appointment == null) return NotFound();
 
-            // Admin için hem hizmet hem eğitmen dropdown'ları dolu gelsin
-            await LoadDropdownsAsync(includeTrainers: true);
+            await LoadServicesAsync();
+
+            // Seçili hizmete göre eğitmenleri doldur (yoksa boş)
+            if (appointment.ServiceId > 0)
+                await LoadTrainersByServiceAsync(appointment.ServiceId, appointment.TrainerId);
+            else
+                ViewBag.Trainers = new SelectList(Enumerable.Empty<SelectListItem>());
 
             return View(appointment);
         }
 
-        // ------------------------------------------------------
-        //  ADMIN: RANDEVU DÜZENLEME (POST)
-        // ------------------------------------------------------
+        // -------------------------------
+        // ADMIN: EDIT (POST)
+        // -------------------------------
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
@@ -203,11 +165,14 @@ namespace FitnessCenterProject.Controllers
         {
             if (id != appointment.Id) return NotFound();
 
+            await LoadServicesAsync();
+            if (appointment.ServiceId > 0)
+                await LoadTrainersByServiceAsync(appointment.ServiceId, appointment.TrainerId);
+            else
+                ViewBag.Trainers = new SelectList(Enumerable.Empty<SelectListItem>());
+
             if (!ModelState.IsValid)
-            {
-                await LoadDropdownsAsync(includeTrainers: true);
                 return View(appointment);
-            }
 
             try
             {
@@ -218,16 +183,15 @@ namespace FitnessCenterProject.Controllers
             {
                 if (!AppointmentExists(appointment.Id))
                     return NotFound();
-                else
-                    throw;
+                throw;
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        // ------------------------------------------------------
-        //  ADMIN: RANDEVU SİLME (GET)
-        // ------------------------------------------------------
+        // -------------------------------
+        // ADMIN: DELETE (GET)
+        // -------------------------------
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -237,16 +201,16 @@ namespace FitnessCenterProject.Controllers
                 .Include(a => a.Member)
                 .Include(a => a.Trainer)
                 .Include(a => a.Service)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (appointment == null) return NotFound();
 
             return View(appointment);
         }
 
-        // ------------------------------------------------------
-        //  ADMIN: RANDEVU SİLME (POST)
-        // ------------------------------------------------------
+        // -------------------------------
+        // ADMIN: DELETE (POST)
+        // -------------------------------
         [HttpPost, ActionName("Delete")]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
@@ -262,9 +226,9 @@ namespace FitnessCenterProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ------------------------------------------------------
-        //  ADMIN: RANDEVU ONAYLA
-        // ------------------------------------------------------
+        // -------------------------------
+        // ADMIN: APPROVE / REJECT
+        // -------------------------------
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Approve(int id)
         {
@@ -273,13 +237,9 @@ namespace FitnessCenterProject.Controllers
 
             appointment.Status = AppointmentStatus.Approved;
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
 
-        // ------------------------------------------------------
-        //  ADMIN: RANDEVU REDDET
-        // ------------------------------------------------------
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Reject(int id)
         {
@@ -288,28 +248,39 @@ namespace FitnessCenterProject.Controllers
 
             appointment.Status = AppointmentStatus.Rejected;
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
 
-        // ------------------------------------------------------
-        //  Yardımcı metotlar
-        // ------------------------------------------------------
+        // =========================
+        // HELPERS
+        // =========================
 
-        // Hizmet & (gerekirse) Eğitmen dropdown'larını doldur
-        private async Task LoadDropdownsAsync(bool includeTrainers)
+        // Create.cshtml senin yazdığın gibi services listesini kullanıyor:
+        // var services = ViewBag.Services as IEnumerable<Service>
+        private async Task LoadServicesAsync()
         {
             ViewBag.Services = await _context.Services
                 .OrderBy(s => s.Name)
                 .ToListAsync();
+        }
 
-            if (includeTrainers)
-            {
-                ViewBag.Trainers = await _context.Trainers
-                    .OrderBy(t => t.FirstName)
-                    .ThenBy(t => t.LastName)
-                    .ToListAsync();
-            }
+        // Eğitmenleri seçilen hizmete göre doldur
+        private async Task LoadTrainersByServiceAsync(int serviceId, int? selectedTrainerId = null)
+        {
+            var trainers = await _context.TrainerServices
+                .Where(ts => ts.ServiceId == serviceId)
+                .Select(ts => ts.Trainer!)
+                .Distinct()
+                .OrderBy(t => t.FirstName)
+                .ThenBy(t => t.LastName)
+                .Select(t => new
+                {
+                    t.Id,
+                    FullName = t.FirstName + " " + t.LastName
+                })
+                .ToListAsync();
+
+            ViewBag.Trainers = new SelectList(trainers, "Id", "FullName", selectedTrainerId);
         }
 
         private bool AppointmentExists(int id)
