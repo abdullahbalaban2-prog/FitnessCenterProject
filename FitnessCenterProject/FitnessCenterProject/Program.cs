@@ -2,6 +2,8 @@
 using FitnessCenterProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FitnessCenterProject.Services;
+
 
 namespace FitnessCenterProject
 {
@@ -36,6 +38,9 @@ namespace FitnessCenterProject
             // 3) MVC + Razor Pages + API Controllers
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IAiService, FakeAiService>();
 
             var app = builder.Build();
 

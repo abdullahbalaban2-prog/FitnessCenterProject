@@ -13,7 +13,7 @@
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- HİZMET SEÇİMİ -->
+            <!-- HİZMET -->
             <div class="mb-3">
                 <label asp-for="ServiceId" class="form-label"></label>
                 <select asp-for="ServiceId" class="form-select" id="serviceSelect">
@@ -30,7 +30,7 @@
                 <span asp-validation-for="ServiceId" class="text-danger"></span>
             </div>
 
-            <!-- EĞİTMEN SEÇİMİ -->
+            <!-- EĞİTMEN -->
             <div class="mb-3">
                 <label asp-for="TrainerId" class="form-label"></label>
                 <select asp-for="TrainerId" class="form-select" id="trainerSelect" asp-items="ViewBag.Trainers">
@@ -39,14 +39,14 @@
                 <span asp-validation-for="TrainerId" class="text-danger"></span>
             </div>
 
-            <!-- BAŞLANGIÇ ZAMANI -->
+            <!-- BAŞLANGIÇ -->
             <div class="mb-3">
                 <label asp-for="StartDateTime" class="form-label"></label>
-                <input asp-for="StartDateTime" class="form-control" />
+                <input asp-for="StartDateTime" class="form-control" type="datetime-local" />
                 <span asp-validation-for="StartDateTime" class="text-danger"></span>
             </div>
 
-            <!-- ÜCRET (read-only) -->
+            <!-- ÜCRET -->
             <div class="mb-3">
                 <label asp-for="Price" class="form-label"></label>
                 <input asp-for="Price" class="form-control" readonly />
@@ -67,7 +67,6 @@
             const trainerSelect = document.getElementById('trainerSelect');
             const priceInput = document.getElementById('Price');
 
-            // API'den eğitmenleri çeken fonksiyon
             async function loadTrainers(serviceId, selectedTrainerId) {
                 trainerSelect.innerHTML = "";
 
@@ -81,11 +80,14 @@
 
                 try {
                     const response = await fetch(`/api/trainers/by-service/${serviceId}`);
-                    if (!response.ok) {
-                        throw new Error("Sunucudan geçerli bir cevap alınamadı.");
-                    }
+                    if (!response.ok) throw new Error("Eğitmen listesi alınamadı.");
 
                     const data = await response.json();
+
+                    const placeholder = document.createElement('option');
+                    placeholder.value = "";
+                    placeholder.textContent = "Eğitmen seçin";
+                    trainerSelect.appendChild(placeholder);
 
                     if (!data || data.length === 0) {
                         const opt = document.createElement('option');
@@ -95,13 +97,6 @@
                         return;
                     }
 
-                    // Placeholder
-                    const placeholder = document.createElement('option');
-                    placeholder.value = "";
-                    placeholder.textContent = "Eğitmen seçin";
-                    trainerSelect.appendChild(placeholder);
-
-                    // Eğitmenleri ekle
                     for (const t of data) {
                         const opt = document.createElement('option');
                         opt.value = t.id;
@@ -110,7 +105,6 @@
                         if (selectedTrainerId && Number(selectedTrainerId) === Number(t.id)) {
                             opt.selected = true;
                         }
-
                         trainerSelect.appendChild(opt);
                     }
                 } catch (err) {
@@ -122,13 +116,12 @@
                 }
             }
 
-            // Hizmet değişince fiyat + eğitmenleri güncelle
             serviceSelect.addEventListener('change', function () {
                 const selected = this.options[this.selectedIndex];
                 const serviceId = this.value;
 
                 if (selected && selected.dataset.price && priceInput) {
-                    // , / . farkını kullanıcı için düzeltiyoruz
+                    // Kullanıcıya TR formatında gösterelim (virgül)
                     priceInput.value = selected.dataset.price.replace('.', ',');
                 } else if (priceInput) {
                     priceInput.value = "";
@@ -137,13 +130,13 @@
                 loadTrainers(serviceId, null);
             });
 
-            // Eğer Model'de daha önce seçilmiş değerler varsa (post sonrası hata durumu)
+            // Post-back sonrası seçimleri koru
             const initialServiceId = '@Model.ServiceId';
             const initialTrainerId = '@Model.TrainerId';
 
             if (initialServiceId && initialServiceId !== '0') {
                 serviceSelect.value = initialServiceId;
-                // Fiyatı da set et
+
                 const selected = serviceSelect.options[serviceSelect.selectedIndex];
                 if (selected && selected.dataset.price && priceInput) {
                     priceInput.value = selected.dataset.price.replace('.', ',');
@@ -153,4 +146,4 @@
             }
         })();
     </script>
-}  
+}

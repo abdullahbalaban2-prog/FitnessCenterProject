@@ -1,0 +1,26 @@
+﻿@model IEnumerable<FitnessCenterProject.Models.AiRecommendation>
+@{
+    ViewData["Title"] = "AI Önerileri (Admin)";
+}
+
+<h2 class="mb-3">AI Önerileri (Admin)</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Tarih</th>
+            <th>Kullanıcı</th>
+            <th>Hedef</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td>@x.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@(x.User?.Email ?? x.UserId)</td>
+                <td>@x.Goal</td>
+            </tr>
+        }
+    </tbody>
+</table>

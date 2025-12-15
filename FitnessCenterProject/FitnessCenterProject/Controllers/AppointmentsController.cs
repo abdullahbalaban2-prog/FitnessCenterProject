@@ -59,7 +59,7 @@ namespace FitnessCenterProject.Controllers
         // -------------------------------
         public async Task<IActionResult> Create()
         {
-            await LoadServicesAsync(); // ViewBag.Services = List<Service>
+            await LoadServicesAsync();
             ViewBag.Trainers = new SelectList(Enumerable.Empty<SelectListItem>());
 
             var model = new Appointment
@@ -77,33 +77,70 @@ namespace FitnessCenterProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Appointment appointment)
         {
-            // Sayfa geri dönerse hizmetler yine dolu kalsın
             await LoadServicesAsync();
 
-            // Trainer dropdown: seçilen ServiceId’ye göre tekrar dolsun (formda eğitmen seçimi kaybolmasın)
             if (appointment.ServiceId > 0)
                 await LoadTrainersByServiceAsync(appointment.ServiceId, appointment.TrainerId);
             else
                 ViewBag.Trainers = new SelectList(Enumerable.Empty<SelectListItem>());
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Challenge();
+            if (string.IsNullOrWhiteSpace(userId))
+                return Challenge();
 
             appointment.MemberId = userId;
 
-            // Servisten fiyat + süre çek
+            // Formda olmayan ama Required olan alanları ModelState'den düşür
+            // (Bunları biz server tarafında set edeceğiz)
+            ModelState.Remove(nameof(Appointment.EndDateTime));
+            ModelState.Remove(nameof(Appointment.Price));
+            ModelState.Remove(nameof(Appointment.MemberId)); // formdan gelmiyor
+
+            // Servisi çek: süre + ücret
             var service = await _context.Services.FirstOrDefaultAsync(s => s.Id == appointment.ServiceId);
             if (service == null)
             {
-                ModelState.AddModelError("ServiceId", "Geçerli bir hizmet seçmelisiniz.");
-            }
-            else
-            {
-                appointment.Price = service.Price;
-                appointment.EndDateTime = appointment.StartDateTime.AddMinutes(service.DurationMinutes);
+                ModelState.AddModelError(nameof(Appointment.ServiceId), "Geçerli bir hizmet seçmelisiniz.");
+                return View(appointment);
             }
 
+            appointment.Price = service.Price;
+            appointment.EndDateTime = appointment.StartDateTime.AddMinutes(service.DurationMinutes);
             appointment.Status = AppointmentStatus.Pending;
+
+            // ✅ Müsaitlik kontrolü (seçilen saat o eğitmenin tanımlı aralığında mı?)
+            var day = appointment.StartDateTime.DayOfWeek;
+            var startTime = appointment.StartDateTime.TimeOfDay;
+            var endTime = appointment.EndDateTime.TimeOfDay;
+
+            var hasAvailability = await _context.TrainerAvailabilities.AnyAsync(a =>
+                a.TrainerId == appointment.TrainerId &&
+                a.DayOfWeek == day &&
+                a.StartTime <= startTime &&
+                a.EndTime >= endTime
+            );
+
+            if (!hasAvailability)
+            {
+                ModelState.AddModelError(nameof(Appointment.StartDateTime),
+                    "Seçtiğiniz saat eğitmenin müsaitlik aralığına uymuyor.");
+                return View(appointment);
+            }
+
+            // ✅ Çakışma kontrolü (Pending + Approved ile çakışma olmasın)
+            var hasConflict = await _context.Appointments.AnyAsync(a =>
+                a.TrainerId == appointment.TrainerId &&
+                (a.Status == AppointmentStatus.Pending || a.Status == AppointmentStatus.Approved) &&
+                appointment.StartDateTime < a.EndDateTime &&
+                appointment.EndDateTime > a.StartDateTime
+            );
+
+            if (hasConflict)
+            {
+                ModelState.AddModelError(nameof(Appointment.StartDateTime),
+                    "Bu saat aralığında eğitmenin başka bir randevusu var. Lütfen farklı bir saat seçin.");
+                return View(appointment);
+            }
 
             if (!ModelState.IsValid)
                 return View(appointment);
@@ -146,7 +183,6 @@ namespace FitnessCenterProject.Controllers
 
             await LoadServicesAsync();
 
-            // Seçili hizmete göre eğitmenleri doldur (yoksa boş)
             if (appointment.ServiceId > 0)
                 await LoadTrainersByServiceAsync(appointment.ServiceId, appointment.TrainerId);
             else
@@ -166,6 +202,7 @@ namespace FitnessCenterProject.Controllers
             if (id != appointment.Id) return NotFound();
 
             await LoadServicesAsync();
+
             if (appointment.ServiceId > 0)
                 await LoadTrainersByServiceAsync(appointment.ServiceId, appointment.TrainerId);
             else
@@ -222,7 +259,6 @@ namespace FitnessCenterProject.Controllers
                 _context.Appointments.Remove(appointment);
                 await _context.SaveChangesAsync();
             }
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -237,6 +273,7 @@ namespace FitnessCenterProject.Controllers
 
             appointment.Status = AppointmentStatus.Approved;
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -248,15 +285,13 @@ namespace FitnessCenterProject.Controllers
 
             appointment.Status = AppointmentStatus.Rejected;
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
         // =========================
         // HELPERS
         // =========================
-
-        // Create.cshtml senin yazdığın gibi services listesini kullanıyor:
-        // var services = ViewBag.Services as IEnumerable<Service>
         private async Task LoadServicesAsync()
         {
             ViewBag.Services = await _context.Services
@@ -264,7 +299,6 @@ namespace FitnessCenterProject.Controllers
                 .ToListAsync();
         }
 
-        // Eğitmenleri seçilen hizmete göre doldur
         private async Task LoadTrainersByServiceAsync(int serviceId, int? selectedTrainerId = null)
         {
             var trainers = await _context.TrainerServices

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FitnessCenterProject.Models
 {
@@ -7,29 +9,23 @@ namespace FitnessCenterProject.Models
         public int Id { get; set; }
 
         [Required]
-        public string UserId {  get; set; }=string.Empty;
+        public string UserId { get; set; } = null!;
+
+        // Navigation (Admin listesinde x.User?.Email için gerekli)
         public ApplicationUser? User { get; set; }
-        
-        public double? Height { get; set; }
-        public double? Weight{ get; set; }
 
-        [StringLength(50)]
-        public string? BodyType { get; set; }   
+        public int Height { get; set; }
+        public int Weight { get; set; }
 
-        [StringLength(50)]
-        public string? Goal{ get; set; }
-        
-        [StringLength(50)]
-        public string? RequestType {  get; set; }
+        public string? BodyType { get; set; }
+        public string? Goal { get; set; }
+        public string? RequestType { get; set; }
 
-        // AI trf. üretilen plan
-        [StringLength(50)]
-        public string? GeneratedPlan{ get; set; }
+        [Column(TypeName = "nvarchar(max)")]
+        public string GeneratedPlan { get; set; } = string.Empty;
 
-        [StringLength(500)]
-        public string? GeneratedImageUrl {  get; set; }   
+        public string? GeneratedImageUrl { get; set; }
 
-        public DateTime CreatedAt {  get; set; } = DateTime.UtcNow;
-
+        public DateTime CreatedAt { get; set; }
     }
 }

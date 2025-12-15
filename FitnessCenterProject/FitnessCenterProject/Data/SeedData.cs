@@ -166,7 +166,7 @@ namespace FitnessCenterProject.Data
                 await context.SaveChangesAsync();
             }
 
-            // (İleride istersen buraya TrainerAvailability vs. seed de ekleyebiliriz)
+            
         }
     }
 }

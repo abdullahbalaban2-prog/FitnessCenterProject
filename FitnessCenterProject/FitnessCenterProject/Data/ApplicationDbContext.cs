@@ -27,33 +27,39 @@ namespace FitnessCenterProject.Data
             builder.Entity<TrainerService>()
                 .HasKey(ts => new { ts.TrainerId, ts.ServiceId });
 
-            
             builder.Entity<Appointment>()
                 .HasOne(a => a.Trainer)
                 .WithMany(t => t.Appointments)
                 .HasForeignKey(a => a.TrainerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            
             builder.Entity<Appointment>()
                 .HasOne(a => a.Service)
                 .WithMany(s => s.Appointments)
                 .HasForeignKey(a => a.ServiceId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            
             builder.Entity<TrainerService>()
                 .HasOne(ts => ts.Trainer)
                 .WithMany(t => t.TrainerServices)
                 .HasForeignKey(ts => ts.TrainerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            
             builder.Entity<TrainerService>()
                 .HasOne(ts => ts.Service)
                 .WithMany(s => s.TrainerServices)
                 .HasForeignKey(ts => ts.ServiceId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // ✅ GeneratedPlan truncation hatasını bitiren kısım
+            builder.Entity<AiRecommendation>()
+                .Property(x => x.GeneratedPlan)
+                .HasColumnType("nvarchar(max)");
+
+            // (İsteğe bağlı ama temiz) Image url uzunluğu
+            builder.Entity<AiRecommendation>()
+                .Property(x => x.GeneratedImageUrl)
+                .HasMaxLength(500);
         }
     }
 }
