@@ -62,12 +62,9 @@ namespace FitnessCenterProject.Data
 
             // ----------------------------------------
             // 3) Domain verileri (Salon, Hizmet, Eğitmen, TrainerService)
-            //    Daha önce oluşturulmadıysa ekleyelim
             // ----------------------------------------
-
             if (!context.FitnessCenters.Any())
             {
-                // SALON
                 var merkez = new FitnessCenter
                 {
                     Name = "Merkez Spor Salonu",
@@ -79,7 +76,6 @@ namespace FitnessCenterProject.Data
                 context.FitnessCenters.Add(merkez);
                 await context.SaveChangesAsync();
 
-                // HİZMETLER
                 var serviceFitness = new Service
                 {
                     Name = "Genel Fitness",
@@ -110,7 +106,6 @@ namespace FitnessCenterProject.Data
                 context.Services.AddRange(serviceFitness, serviceYoga, servicePilates);
                 await context.SaveChangesAsync();
 
-                // EĞİTMENLER
                 var trainerAli = new Trainer
                 {
                     FirstName = "Ali",
@@ -141,32 +136,54 @@ namespace FitnessCenterProject.Data
                 context.Trainers.AddRange(trainerAli, trainerZeynep, trainerMelis);
                 await context.SaveChangesAsync();
 
-                // TRAINER-SERVICE (çoktan çoğa eşleşmeler)
-                // Ali → Genel Fitness
-                // Zeynep → Yoga
-                // Melis → Pilates
                 context.TrainerServices.AddRange(
-                    new TrainerService
-                    {
-                        TrainerId = trainerAli.Id,
-                        ServiceId = serviceFitness.Id
-                    },
-                    new TrainerService
-                    {
-                        TrainerId = trainerZeynep.Id,
-                        ServiceId = serviceYoga.Id
-                    },
-                    new TrainerService
-                    {
-                        TrainerId = trainerMelis.Id,
-                        ServiceId = servicePilates.Id
-                    }
+                    new TrainerService { TrainerId = trainerAli.Id, ServiceId = serviceFitness.Id },
+                    new TrainerService { TrainerId = trainerZeynep.Id, ServiceId = serviceYoga.Id },
+                    new TrainerService { TrainerId = trainerMelis.Id, ServiceId = servicePilates.Id }
                 );
 
                 await context.SaveChangesAsync();
             }
 
-            
+            // ----------------------------------------
+            // 4) TrainerAvailability seed (YOKSA EKLE)
+            // ----------------------------------------
+            if (!context.TrainerAvailabilities.Any())
+            {
+                var trainers = await context.Trainers.ToListAsync();
+                if (trainers.Any())
+                {
+                    var start = new TimeSpan(8, 0, 0);
+                    var end = new TimeSpan(22, 0, 0);
+
+                    // Pazartesi - Cumartesi (istersen Pazar da ekleriz)
+                    var days = new[]
+                    {
+                        DayOfWeek.Monday,
+                        DayOfWeek.Tuesday,
+                        DayOfWeek.Wednesday,
+                        DayOfWeek.Thursday,
+                        DayOfWeek.Friday,
+                        DayOfWeek.Saturday
+                    };
+
+                    foreach (var t in trainers)
+                    {
+                        foreach (var d in days)
+                        {
+                            context.TrainerAvailabilities.Add(new TrainerAvailability
+                            {
+                                TrainerId = t.Id,
+                                DayOfWeek = d,
+                                StartTime = start,
+                                EndTime = end
+                            });
+                        }
+                    }
+
+                    await context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

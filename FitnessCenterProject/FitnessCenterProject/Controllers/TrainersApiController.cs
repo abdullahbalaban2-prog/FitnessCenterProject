@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FitnessCenterProject.Data;
@@ -18,99 +19,95 @@ namespace FitnessCenterProject.Controllers
             _context = context;
         }
 
-        // GET: /api/trainers
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var trainers = await _context.Trainers
-                .Include(t => t.FitnessCenter)
-                .OrderBy(t => t.LastName)
-                .ThenBy(t => t.FirstName)
-                .Select(t => new
-                {
-                    id = t.Id,
-                    fullName = t.FirstName + " " + t.LastName,
-                    specialty = t.Specialty,
-                    fitnessCenterName = t.FitnessCenter != null ? t.FitnessCenter.Name : null
-                })
-                .ToListAsync();
-
-            return Ok(trainers);
-        }
-
-        // GET: /api/trainers/by-service/3
+        // ---------------------------------------------------------------
+        // 1) Hizmete göre eğitmenleri getir
+        // ---------------------------------------------------------------
         [HttpGet("by-service/{serviceId:int}")]
         public async Task<IActionResult> GetByService(int serviceId)
         {
             var trainers = await _context.TrainerServices
                 .Where(ts => ts.ServiceId == serviceId)
                 .Select(ts => ts.Trainer!)
-                .Distinct()
-                .Include(t => t.FitnessCenter)
-                .OrderBy(t => t.LastName)
-                .ThenBy(t => t.FirstName)
+                .OrderBy(t => t.FirstName)
                 .Select(t => new
                 {
                     id = t.Id,
-                    fullName = t.FirstName + " " + t.LastName,
-                    specialty = t.Specialty,
-                    fitnessCenterName = t.FitnessCenter != null ? t.FitnessCenter.Name : null
+                    fullName = t.FirstName + " " + t.LastName
                 })
                 .ToListAsync();
 
             return Ok(trainers);
         }
 
-        // GET: /api/trainers/available?date=2025-12-12T18:00:00&serviceId=3
-        // serviceId opsiyonel (gönderilirse: o hizmeti verebilen + o saatte müsait olan)
-        [HttpGet("available")]
-        public async Task<IActionResult> GetAvailable([FromQuery] DateTime date, [FromQuery] int? serviceId)
+        // ---------------------------------------------------------------
+        // 2) Eğitmenin bir gündeki boş saatlerini getir (MHRS mantığı)
+        // Parametreler:
+        //  - trainerId
+        //  - date: "yyyy-MM-dd"
+        //  - duration: dakika (isteğe bağlı; verilmezse hizmetin süresi kullanılmalı)
+        //  - serviceId: duration yoksa zorunlu
+        // ---------------------------------------------------------------
+        [HttpGet("free-slots")]
+        public async Task<IActionResult> GetFreeSlots(
+            int trainerId,
+            string date,
+            int? duration,
+            int? serviceId)
         {
-            // “date” ile gelen saat aralığı: 1 saatlik slot gibi düşünelim (istersen 30 dk yaparız)
-            var start = date;
-            var end = date.AddHours(1);
+            if (!DateTime.TryParse(date, out var selectedDate))
+                return BadRequest("Invalid date.");
 
-            var day = date.DayOfWeek;
-            var startTime = start.TimeOfDay;
-            var endTime = end.TimeOfDay;
+            // Eğitmenin o gün çalışma aralığı
+            var availability = await _context.TrainerAvailabilities
+                .FirstOrDefaultAsync(a => a.TrainerId == trainerId && a.DayOfWeek == selectedDate.DayOfWeek);
 
-            // 1) O gün, o saat aralığını kapsayan availability’si olan trainerlar
-            var query = _context.TrainerAvailabilities
-                .Where(a => a.DayOfWeek == day
-                            && a.StartTime <= startTime
-                            && a.EndTime >= endTime)
-                .Select(a => a.Trainer!)
-                .Distinct()
-                .AsQueryable();
+            if (availability == null)
+                return Ok(new List<string>()); // O gün çalışmıyor
 
-            // 2) Eğer serviceId geldiyse: TrainerService üzerinden filtrele
-            if (serviceId.HasValue && serviceId.Value > 0)
+            int durMin = duration ?? 0;
+            if (durMin <= 0)
             {
-                query = query.Where(t =>
-                    _context.TrainerServices.Any(ts => ts.TrainerId == t.Id && ts.ServiceId == serviceId.Value));
+                if (serviceId == null) return BadRequest("duration or serviceId required.");
+                var svc = await _context.Services.FindAsync(serviceId.Value);
+                if (svc == null) return BadRequest("Service not found.");
+                durMin = svc.DurationMinutes;
             }
 
-            // 3) O saat aralığında çakışan appointment’ı olanları çıkar
-            query = query.Where(t =>
-                !_context.Appointments.Any(ap =>
-                    ap.TrainerId == t.Id &&
-                    ap.StartDateTime < end &&
-                    ap.EndDateTime > start));
+            var startSpan = availability.StartTime;
+            var endSpan = availability.EndTime;
+            var step = TimeSpan.FromMinutes(durMin);
 
-            var result = await query
-                .Include(t => t.FitnessCenter)
-                .OrderBy(t => t.LastName)
-                .ThenBy(t => t.FirstName)
-                .Select(t => new
-                {
-                    id = t.Id,
-                    fullName = t.FirstName + " " + t.LastName,
-                    specialty = t.Specialty,
-                    fitnessCenterName = t.FitnessCenter != null ? t.FitnessCenter.Name : null
-                })
+            // Sadece ONAYLI randevular slotları kapatsın
+            var approved = await _context.Appointments
+                .Where(a => a.TrainerId == trainerId
+                            && a.Status == Models.AppointmentStatus.Approved
+                            && a.StartDateTime.Date == selectedDate.Date)
+                .Select(a => new { a.StartDateTime, a.EndDateTime })
                 .ToListAsync();
+
+            var result = new List<string>();
+
+            for (var t = startSpan; t.Add(step) <= endSpan; t = t.Add(step))
+            {
+                var slotStart = selectedDate.Date + t;      // yerel
+                var slotEnd = slotStart.Add(step);
+
+                bool clash = approved.Any(a =>
+                    slotStart < a.EndDateTime && slotEnd > a.StartDateTime);
+
+                if (!clash)
+                    result.Add(slotStart.ToString("yyyy-MM-ddTHH:mm")); // Z YOK
+            }
 
             return Ok(result);
         }
+
+        // ---------------------------------------------------------------
+        // 3) Geriye dönük uyumluluk: /api/trainers/slots ... (alias)
+        // ---------------------------------------------------------------
+        [HttpGet("slots")]
+        public Task<IActionResult> GetSlotsAlias(
+            int trainerId, string date, int duration, int? serviceId = null)
+            => GetFreeSlots(trainerId, date, duration, serviceId);
     }
 }

@@ -4,132 +4,124 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FitnessCenterProject</title>
+
+    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- BEAST MODE CSS -->
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+
+    <!-- CUSTOM SITE CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/FitnessCenterProject.styles.css" asp-append-version="true" />
 </head>
+
 <body>
+
+    <!-- ============================= -->
+    <!--          NAVBAR              -->
+    <!-- ============================= -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg beast-navbar shadow-sm">
             <div class="container-fluid">
 
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    Fitness Center
+                <!-- LOGO -->
+                <a class="navbar-brand beast-logo" asp-controller="Home" asp-action="Index">
+                    <span class="text-red">FITNESS</span>CENTER
                 </a>
 
-                <button class="navbar-toggler" type="button"
-                        data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false"
-                        aria-label="Toggle navigation">
+                <button class="navbar-toggler bg-dark text-white" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="collapse navbar-collapse" id="mainNav">
 
-                    <!-- SOL MENÜ (HERKES İÇİN GÖRÜNENLER) -->
-                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                    <!-- LEFT MENU -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-                                Ana Sayfa
-                            </a>
+                            <a class="nav-link beast-link" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="FitnessCenters" asp-action="Index">
-                                Salonlar
-                            </a>
+                            <a class="nav-link beast-link" asp-controller="FitnessCenters" asp-action="Index">Salonlar</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Services" asp-action="Index">
-                                Hizmetler
-                            </a>
+                            <a class="nav-link beast-link" asp-controller="Services" asp-action="Index">Hizmetler</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Trainers" asp-action="Index">
-                                Antrenörler
-                            </a>
+                            <a class="nav-link beast-link" asp-controller="Trainers" asp-action="Index">Antrenörler</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointments">
-                                Randevularım
-                            </a>
+                            <a class="nav-link beast-link" asp-controller="Appointments" asp-action="MyAppointments">Randevularım</a>
                         </li>
 
-                        <!-- ✅ DÜZELTİLDİ: asp-action="My" -> "MyRecommendations" -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="AiRecommendations" asp-action="MyRecommendations">
+                            <a class="nav-link beast-link" asp-controller="AiRecommendations" asp-action="MyRecommendations">
                                 AI Önerileri
                             </a>
                         </li>
 
-                        @* YALNIZCA ADMIN İÇİN YÖNETİM MENÜSÜ *@
+                        <!-- ADMIN MENU -->
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark"
-                                   href="#" id="adminDropdown"
-                                   role="button" data-bs-toggle="dropdown"
-                                   aria-expanded="false">
+                                <a class="nav-link dropdown-toggle beast-link"
+                                   href="#" role="button" data-bs-toggle="dropdown">
                                     Yönetim
                                 </a>
 
-                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="FitnessCenters" asp-action="Index">
-                                            Salon Yönetimi
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Services" asp-action="Index">
-                                            Hizmet Yönetimi
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Trainers" asp-action="Index">
-                                            Antrenör Yönetimi
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="TrainerAvailabilities" asp-action="Index">
-                                            Müsaitlikler
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Appointments" asp-action="Index">
-                                            Tüm Randevular
-                                        </a>
-                                    </li>
+                                <ul class="dropdown-menu beast-dropdown">
+                                    <li><a class="dropdown-item" asp-controller="FitnessCenters" asp-action="Index">Salon Yönetimi</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Services" asp-action="Index">Hizmet Yönetimi</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Trainers" asp-action="Index">Antrenör Yönetimi</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Appointments" asp-action="Index">Tüm Randevular</a></li>
                                 </ul>
                             </li>
                         }
                     </ul>
 
-                    <!-- SAĞ TARAF (GİRİŞ / ÇIKIŞ / KULLANICI ADI) -->
+                    <!-- RIGHT SIDE USER LOGIN -->
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <!-- ============================= -->
+    <!--           CONTENT             -->
+    <!-- ============================= -->
+    <div class="container py-4">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted mt-4">
-        <div class="container py-2">
-            &copy; 2025 - FitnessCenterProject -
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
-        </div>
+
+    <!-- ============================= -->
+    <!--            FOOTER             -->
+    <!-- ============================= -->
+    <footer class="footer text-center py-3 mt-4">
+        <p class="mb-0">
+            © 2025 – <span class="text-red">FitnessCenterProject</span> | CrossFit Beast Mode UI
+        </p>
+        <a asp-controller="Home" asp-action="Privacy" class="text-muted small">
+            Gizlilik Politikası
+        </a>
     </footer>
 
+
+    <!-- JS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+
 </body>
 </html>

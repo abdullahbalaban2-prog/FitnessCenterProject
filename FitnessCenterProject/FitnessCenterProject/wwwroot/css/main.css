@@ -1,0 +1,762 @@
+﻿/* ============================
+   GLOBAL BEAST MODE THEME
+   Red / Black CrossFit UI
+============================ */
+
+body {
+    background: #0a0a0a;
+    color: #f2f2f2;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+/* ============================
+   NAVBAR
+============================ */
+
+.beast-navbar {
+    background: #000 !important;
+    border-bottom: 3px solid #d60000;
+    padding: 12px 0;
+}
+
+.beast-logo {
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: white !important;
+}
+
+.text-red {
+    color: #d60000 !important;
+}
+
+.beast-link {
+    color: #ddd !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: color .2s ease-in-out, transform .2s ease;
+}
+
+    .beast-link:hover {
+        color: #ff1a1a !important;
+        transform: translateY(-2px);
+    }
+
+/* Dropdown for Admin */
+.beast-dropdown {
+    background: #111;
+    border: 1px solid #d60000;
+}
+
+    .beast-dropdown .dropdown-item {
+        color: #eee;
+    }
+
+        .beast-dropdown .dropdown-item:hover {
+            background: #d60000;
+            color: #fff;
+        }
+
+
+/* ============================
+   BUTTONS
+============================ */
+
+.btn-primary {
+    background: #d60000 !important;
+    border-color: #b30000 !important;
+    font-weight: 600;
+}
+
+    .btn-primary:hover {
+        background: #ff1a1a !important;
+        border-color: #ff0000 !important;
+        transform: translateY(-2px);
+    }
+
+.btn-secondary {
+    background: #333 !important;
+    border-color: #444 !important;
+}
+
+    .btn-secondary:hover {
+        background: #555 !important;
+    }
+
+
+/* ============================
+   CARDS
+============================ */
+
+.card {
+    background: #111 !important;
+    border: 1px solid #222 !important;
+    color: #eee;
+}
+
+.card-title {
+    font-weight: 700;
+    color: #ff1a1a;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+
+/* ============================
+   FORMS
+============================ */
+
+.form-control,
+.form-select {
+    background: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    color: white !important;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(214, 0, 0, 0.4);
+        border-color: #d60000 !important;
+    }
+
+
+/* ============================
+   TABLES
+============================ */
+
+.table {
+    color: #ddd !important;
+}
+
+    .table thead {
+        background: #d60000 !important;
+        color: white !important;
+    }
+
+    .table tbody tr {
+        background: #111;
+        transition: background .2s;
+    }
+
+        .table tbody tr:hover {
+            background: #1a1a1a;
+        }
+
+
+/* ============================
+   ALERTS
+============================ */
+
+.alert-info {
+    background: #222 !important;
+    border-color: #444 !important;
+    color: #fff !important;
+}
+
+.alert-danger {
+    background: #8b0000 !important;
+    color: #fff !important;
+}
+
+
+/* ============================
+   FOOTER
+============================ */
+
+footer.footer {
+    background: #000;
+    border-top: 3px solid #d60000;
+    color: #aaa;
+}
+
+
+/* ============================
+   HERO SECTIONS (Homepage)
+============================ */
+
+.hero-box {
+    background: linear-gradient(135deg, #1a1a1a, #000);
+    border-left: 5px solid #d60000;
+    padding: 40px;
+}
+
+.display-5 {
+    color: #ff1a1a;
+    font-weight: 800;
+}
+
+
+/* ============================
+   AI Recommendation Output
+============================ */
+
+.ai-output {
+    background: #0f0f0f !important;
+    border-left: 3px solid #d60000 !important;
+    padding: 15px;
+    font-size: 0.95rem;
+    white-space: pre-wrap;
+}
+
+
+/* ============================
+   MODAL
+============================ */
+
+.modal-content {
+    background: #151515;
+    color: white;
+    border: 1px solid #d60000;
+}
+
+
+/* ============================
+   BUTTON SUCCESS / DANGER
+============================ */
+
+.btn-success {
+    background: #076407 !important;
+    border-color: #0a7f0a !important;
+}
+
+.btn-danger {
+    background: #9b0000 !important;
+    border-color: #7a0000 !important;
+}
+
+/* Disabled buttons greyed */
+.btn-secondary:disabled {
+    background: #444 !important;
+    color: #888 !important;
+}
+
+
+/* ============================
+   CROSSFIT TOUCH – SHADOW & ANIM
+============================ */
+
+.shadow-beast {
+    box-shadow: 0 0 25px rgba(214, 0, 0, 0.3);
+}
+
+.scale-hover {
+    transition: transform 0.2s ease-in-out;
+}
+
+    .scale-hover:hover {
+        transform: scale(1.03);
+    }
+
+/* ===========================
+   CROSSFIT PARALLAX HERO
+=========================== */
+.hero-parallax {
+    background-image: url('/images/crossfit-bg.jpg'); /* Sporcu görüntüsü */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 75vh;
+    padding: 60px 0;
+    position: relative;
+}
+
+    .hero-parallax::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(5, 5, 5, 0.65);
+        backdrop-filter: blur(2px);
+    }
+
+    .hero-parallax .container {
+        position: relative;
+        z-index: 5;
+    }
+
+.hero-title {
+    letter-spacing: 1px;
+}
+
+.hero-subtitle {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* ===========================
+   BEAST CARD DESIGN
+=========================== */
+.beast-card {
+    background: #111;
+    border: 2px solid #ff1a1a;
+    border-radius: 10px;
+    padding: 25px;
+    color: #ddd;
+    transition: 0.25s;
+}
+
+    .beast-card:hover {
+        background: #1a1a1a;
+        border-color: #ff3333;
+    }
+
+/* ===========================
+   TABLE & LIST MODERNIZATION
+=========================== */
+.beast-list .list-group-item {
+    background: #181818;
+    border: 1px solid #333;
+    color: #e6e6e6;
+    padding: 15px;
+    font-size: 1.1rem;
+}
+
+    .beast-list .list-group-item:hover {
+        background: #222;
+    }
+
+/* ===========================
+   UTILITY CLASSES
+=========================== */
+.text-red {
+    color: #ff1a1a !important;
+}
+
+.btn-outline-red {
+    border: 2px solid #ff1a1a;
+    color: #ff1a1a;
+    transition: 0.25s;
+}
+
+    .btn-outline-red:hover {
+        background: #ff1a1a;
+        color: #fff;
+    }
+
+.scale-hover {
+    transition: transform 0.25s ease;
+}
+
+    .scale-hover:hover {
+        transform: scale(1.05);
+    }
+
+.shadow-beast {
+    box-shadow: 0 0 15px rgba(255, 50, 50, 0.35);
+}
+
+/* --- ARENA HERO SECTION --- */
+.arena-hero {
+    background: radial-gradient(circle at center, #111 10%, #000 70%);
+    padding: 120px 20px;
+    border-bottom: 3px solid #b30000;
+}
+
+.neon-red {
+    color: #ff1f1f;
+    text-shadow: 0 0 10px #ff1f1f, 0 0 25px #b30000;
+}
+
+.arena-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.85;
+}
+
+/* --- BUTTONS --- */
+.arena-btn-lg {
+    background: #ff1f1f;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1.3rem;
+    border-radius: 6px;
+    transition: 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px #b30000;
+}
+
+    .arena-btn-lg:hover {
+        background: #cc0000;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px #ff2b2b;
+    }
+
+.arena-btn-outline {
+    border: 2px solid #ff1f1f;
+    color: #ff1f1f;
+    padding: 12px 30px;
+    font-size: 1.3rem;
+    transition: 0.3s;
+}
+
+    .arena-btn-outline:hover {
+        background: #ff1f1f;
+        color: white;
+        transform: scale(1.05);
+    }
+
+/* SECTION TITLE */
+.section-title {
+    font-size: 2rem;
+    border-left: 5px solid #ff1f1f;
+    padding-left: 15px;
+}
+
+.neon-border {
+    border-left: 5px solid #ff1f1f;
+}
+
+/* --- ARENA CARDS --- */
+.arena-card {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    border-radius: 8px;
+    padding: 25px;
+    color: white;
+    box-shadow: 0 0 15px #0a0a0a;
+    transition: 0.2s;
+}
+
+    .arena-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 20px #b30000;
+    }
+
+    .arena-card .card-title {
+        color: #ff1f1f;
+        margin-bottom: 10px;
+    }
+
+/* BUTTON SMALL */
+.arena-btn-sm {
+    background: #ff1f1f;
+    color: white;
+    padding: 6px 15px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transition: 0.2s;
+}
+
+    .arena-btn-sm:hover {
+        background: #cc0000;
+        transform: scale(1.07);
+    }
+
+/* INFO BOXES */
+.arena-info-box {
+    background: #111;
+    border: 1px solid #1d1d1d;
+    padding: 20px;
+    border-radius: 6px;
+    color: white;
+    transition: 0.2s;
+}
+
+    .arena-info-box:hover {
+        box-shadow: 0 0 15px #b30000;
+    }
+
+/* SALON SAYFASI ARENA STİLİ */
+.arena-page-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.arena-salon-card {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    padding: 18px;
+    color: #ddd;
+    transition: 0.2s;
+    box-shadow: 0 0 15px #000;
+}
+
+    .arena-salon-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0 25px #b30000;
+    }
+
+.arena-card-header {
+    border-bottom: 1px solid #222;
+    margin-bottom: 12px;
+}
+
+.arena-card-footer a {
+    width: 32%;
+    text-align: center;
+}
+
+/* butonlar */
+.arena-btn-lg-sm {
+    background: #ff1f1f;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    transition: 0.2s;
+    font-weight: bold;
+}
+
+    .arena-btn-lg-sm:hover {
+        background: #cc0000;
+        transform: scale(1.05);
+    }
+
+.arena-btn-sm {
+    background: #ff1f1f;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.arena-btn-sm-warning {
+    background: #e6a500;
+    color: #000;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.arena-btn-sm-danger {
+    background: #cc0000;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.arena-btn-outline {
+    border: 2px solid #ff1f1f;
+    color: #ff1f1f !important;
+    padding: 6px 15px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+    .arena-btn-outline:hover {
+        background: #ff1f1f;
+        color: #fff !important;
+    }
+
+.arena-divider {
+    border-color: #ff1f1f;
+    opacity: 0.5;
+}
+
+.arena-input {
+    background: #111;
+    border: 1px solid #222;
+    color: white;
+}
+
+    .arena-input:focus {
+        border-color: #ff1f1f;
+        box-shadow: 0 0 10px #ff1f1f;
+    }
+
+.arena-form-container {
+    background: #0d0d0d;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #1a1a1a;
+    box-shadow: 0 0 15px #000;
+}
+.arena-service-card {
+    background: #0d0d0d;
+    border-radius: 10px;
+    padding: 18px;
+    border: 1px solid #1a1a1a;
+    transition: 0.25s;
+}
+
+    .arena-service-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0 20px #ff1f1f;
+    }
+
+/* ---- ARENA SLOT BUTTONS ---- */
+
+.arena-slot-btn {
+    background: #111;
+    border: 2px solid #ff1f1f;
+    color: white;
+    padding: 12px 22px;
+    margin: 6px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.2s ease;
+}
+
+    .arena-slot-btn:hover {
+        background: #ff1f1f;
+        color: black;
+        transform: translateY(-3px);
+    }
+
+.active-slot {
+    background: #ff1f1f !important;
+    color: black !important;
+    box-shadow: 0 0 15px #ff1f1f;
+}
+
+/* Form Container */
+.arena-form-container {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255,0,0,0.3);
+}
+
+/* Inputs */
+.arena-input {
+    background: #111 !important;
+    color: #eee !important;
+    border: 1px solid #333;
+}
+
+    .arena-input:focus {
+        border-color: #ff1f1f;
+        box-shadow: 0 0 10px #ff1f1f;
+    }
+
+/* Labels */
+.arena-label {
+    color: #ff1f1f;
+    font-weight: bold;
+}
+
+/* Page Title */
+.arena-page-title {
+    font-size: 36px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.neon-red {
+    color: #ff1f1f;
+    text-shadow: 0 0 10px #ff1f1f;
+}
+
+/* Buttons */
+.arena-btn-lg {
+    background: #ff1f1f;
+    color: black;
+    border-radius: 10px;
+    padding: 14px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+    .arena-btn-lg:hover {
+        background: #ff3c3c;
+        box-shadow: 0 0 15px #ff1f1f;
+    }
+
+/* ----- ARENA DARK CARD ----- */
+.arena-card {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255,0,0,0.25);
+    padding: 20px;
+}
+
+/* Empty message */
+.arena-alert-empty {
+    background: #111;
+    color: #ccc;
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.arena-link {
+    color: #ff1f1f;
+    text-decoration: underline;
+}
+
+/* Table */
+.arena-table thead tr {
+    background: #111;
+    border-bottom: 2px solid #ff1f1f;
+}
+
+.arena-table th {
+    color: #ff1f1f;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.arena-table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #222;
+}
+
+/* Status badges */
+.arena-status {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.status-pending {
+    background: #ffcc00;
+    color: #000;
+}
+
+.status-approved {
+    background: #00ff66;
+    color: #000;
+}
+
+.status-rejected {
+    background: #ff1f1f;
+    color: #000;
+}
+
+.status-cancelled {
+    background: #777;
+    color: #fff;
+}
+
+/* Button */
+.arena-btn-lg {
+    background: #ff1f1f;
+    color: black;
+    font-weight: bold;
+    padding: 14px 22px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    transition: 0.2s;
+    box-shadow: 0 0 10px #ff1f1f;
+}
+
+    .arena-btn-lg:hover {
+        background: #ff3535;
+        box-shadow: 0 0 20px #ff1f1f;
+    }
+
+/* Title */
+.arena-page-title {
+    font-size: 34px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.neon-red {
+    color: #ff1f1f;
+    text-shadow: 0 0 12px #ff1f1f;
+}

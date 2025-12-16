@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Saat Seç";
+    int serviceId = (int)ViewBag.ServiceId;
+    int trainerId = (int)ViewBag.TrainerId;
+    string date = (string)ViewBag.Date;
+}
+
+<h2 class="mb-3">Boş Saat Seç</h2>
+<p class="text-muted">@date tarihindeki kullanılabilir saatler:</p>
+
+<div id="slotContainer" class="mb-4">
+    <p>Yükleniyor...</p>
+</div>
+
+<a class="btn btn-secondary" asp-action="Create">Geri Dön</a>
+
+@section Scripts {
+    <script>
+        async function loadSlots() {
+            const response = await fetch(`/api/trainers/slots?trainerId=@trainerId&date=@date&duration=60`);
+            const data = await response.json();
+
+            const container = document.getElementById("slotContainer");
+            container.innerHTML = "";
+
+            if (data.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning">Bu tarihte boş saat yok.</div>`;
+                return;
+            }
+
+            data.forEach(slot => {
+                const btn = document.createElement("button");
+                btn.className = "btn btn-outline-primary m-2";
+                btn.textContent = slot.substring(11, 16);
+
+                btn.onclick = function () {
+                    const form = document.createElement("form");
+                    form.method = "post";
+                    form.action = "/Appointments/CreateFromSlot";
+
+                    form.innerHTML = `
+                        <input type="hidden" name="serviceId" value="@serviceId" />
+                        <input type="hidden" name="trainerId" value="@trainerId" />
+                        <input type="hidden" name="start" value="${slot}" />
+                    `;
+
+                    document.body.appendChild(form);
+                    form.submit();
+                };
+
+                container.appendChild(btn);
+            });
+        }
+
+        loadSlots();
+    </script>
+}

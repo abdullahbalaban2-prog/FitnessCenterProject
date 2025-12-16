@@ -1,58 +1,46 @@
 ﻿@model FitnessCenterProject.Models.Service
 
 @{
-    ViewData["Title"] = "Yeni Hizmet Ekle";
+    ViewData["Title"] = "Yeni Hizmet";
 }
 
-<h1>Yeni Hizmet Ekle</h1>
+<h1 class="arena-page-title neon-red mb-4">Yeni Hizmet Ekle</h1>
 
-<hr />
+<div class="arena-form-container col-md-6">
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label arena-label"></label>
+            <input asp-for="Name" class="form-control arena-input" />
+        </div>
 
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label arena-label"></label>
+            <textarea asp-for="Description" class="form-control arena-input" rows="3"></textarea>
+        </div>
 
-            <div class="mb-3">
-                <label asp-for="DurationMinutes" class="form-label"></label>
-                <input asp-for="DurationMinutes" class="form-control" />
-                <span asp-validation-for="DurationMinutes" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="DurationMinutes" class="form-label arena-label"></label>
+            <input asp-for="DurationMinutes" class="form-control arena-input" />
+        </div>
 
-            <div class="mb-3">
-                <label asp-for="Price" class="form-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label arena-label"></label>
+            <input asp-for="Price" class="form-control arena-input" />
+        </div>
 
-            <div class="mb-3">
-                <label class="form-label">Spor Salonu</label>
-                <select asp-for="FitnessCenterId"
-                        asp-items="@ViewData["FitnessCenterId"] as IEnumerable<SelectListItem>"
-                        class="form-select">
-                    <option value="">-- Salon Seçiniz --</option>
-                </select>
-                <span asp-validation-for="FitnessCenterId" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label class="form-label arena-label">Spor Salonu</label>
+            <select asp-for="FitnessCenterId"
+                    asp-items="@ViewData["FitnessCenterId"] as IEnumerable<SelectListItem>"
+                    class="form-select arena-input">
+                <option value="">-- Salon Seçiniz --</option>
+            </select>
+        </div>
 
-            <button type="submit" class="btn btn-primary">Kaydet</button>
-            <a asp-action="Index" class="btn btn-secondary ms-2">Listeye Dön</a>
-        </form>
-    </div>
+        <button type="submit" class="btn arena-btn-lg">Kaydet</button>
+        <a asp-action="Index" class="btn arena-btn-outline ms-2">İptal</a>
+    </form>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

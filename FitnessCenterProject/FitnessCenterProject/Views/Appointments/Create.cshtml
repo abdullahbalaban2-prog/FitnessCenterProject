@@ -1,149 +1,207 @@
-﻿@using FitnessCenterProject.Models
-@model FitnessCenterProject.Models.Appointment
+﻿@model FitnessCenterProject.Models.Appointment
+@using FitnessCenterProject.Models
 
 @{
     ViewData["Title"] = "Randevu Al";
-    var services = ViewBag.Services as IEnumerable<Service> ?? Enumerable.Empty<Service>();
 }
 
-<h2 class="mb-4">Randevu Al</h2>
+<h1 class="cf-title mb-4">Randevu Al</h1>
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <form asp-action="CreateFromSlot" method="post" class="cf-card p-4 shadow">
+            @Html.AntiForgeryToken()
 
-            <!-- HİZMET -->
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hizmet -->
             <div class="mb-3">
-                <label asp-for="ServiceId" class="form-label"></label>
-                <select asp-for="ServiceId" class="form-select" id="serviceSelect">
+                <label class="cf-label">Hizmet</label>
+                <select id="serviceSelect" name="serviceId" class="cf-input">
                     <option value="">-- Hizmet Seçin --</option>
-                    @foreach (var s in services)
+                    @foreach (var s in (IEnumerable<Service>)ViewBag.Services)
                     {
                         <option value="@s.Id"
-                                data-price="@s.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                data-price="@s.Price"
                                 data-duration="@s.DurationMinutes">
-                            @s.Name (@s.DurationMinutes dk, @s.Price.ToString("0.00") ₺)
+                            @s.Name (@s.DurationMinutes dk - @s.Price ₺)
                         </option>
                     }
                 </select>
-                <span asp-validation-for="ServiceId" class="text-danger"></span>
             </div>
 
-            <!-- EĞİTMEN -->
+            <!-- Eğitmen -->
             <div class="mb-3">
-                <label asp-for="TrainerId" class="form-label"></label>
-                <select asp-for="TrainerId" class="form-select" id="trainerSelect" asp-items="ViewBag.Trainers">
-                    <option value="">Önce bir hizmet seçin</option>
+                <label class="cf-label">Eğitmen</label>
+                <select id="trainerSelect" name="trainerId" class="cf-input">
+                    <option value="">Önce hizmet seçin</option>
                 </select>
-                <span asp-validation-for="TrainerId" class="text-danger"></span>
             </div>
 
-            <!-- BAŞLANGIÇ -->
+            <!-- Tarih -->
             <div class="mb-3">
-                <label asp-for="StartDateTime" class="form-label"></label>
-                <input asp-for="StartDateTime" class="form-control" type="datetime-local" />
-                <span asp-validation-for="StartDateTime" class="text-danger"></span>
+                <label class="cf-label">Tarih</label>
+                <input id="dateSelect" type="date" class="cf-input" />
             </div>
 
-            <!-- ÜCRET -->
-            <div class="mb-3">
-                <label asp-for="Price" class="form-label"></label>
-                <input asp-for="Price" class="form-control" readonly />
+            <!-- Slotlar -->
+            <h5 class="mt-3 mb-2">Uygun Saatler</h5>
+            <div id="slotArea" class="cf-slot-container"></div>
+
+            <!-- Seçili başlangıç -->
+            <input type="hidden" id="slotStart" name="start" />
+
+            <!-- Ücret bilgisi -->
+            <div class="mt-3">
+                <label class="cf-label">Ücret</label>
+                <input id="priceBox" class="cf-input" readonly />
             </div>
 
-            <button type="submit" class="btn btn-primary">Kaydet</button>
-            <a asp-action="MyAppointments" class="btn btn-secondary ms-2">Randevularım</a>
+            <button class="cf-btn-primary w-100 mt-3">Randevuyu Kaydet</button>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-
     <script>
-        (function () {
-            const serviceSelect = document.getElementById('serviceSelect');
-            const trainerSelect = document.getElementById('trainerSelect');
-            const priceInput = document.getElementById('Price');
+        let duration = 0;
 
-            async function loadTrainers(serviceId, selectedTrainerId) {
-                trainerSelect.innerHTML = "";
+        const serviceSelect = document.getElementById("serviceSelect");
+        const trainerSelect = document.getElementById("trainerSelect");
+        const dateSelect = document.getElementById("dateSelect");
+        const slotArea = document.getElementById("slotArea");
+        const priceBox = document.getElementById("priceBox");
+        const slotStart = document.getElementById("slotStart");
 
-                if (!serviceId) {
-                    const opt = document.createElement('option');
-                    opt.value = "";
-                    opt.textContent = "Önce bir hizmet seçin";
-                    trainerSelect.appendChild(opt);
-                    return;
-                }
+        serviceSelect.addEventListener("change", async () => {
+            const id = serviceSelect.value;
+            if (!id) { trainerSelect.innerHTML = "<option value=''>Önce hizmet seçin</option>"; return; }
 
-                try {
-                    const response = await fetch(`/api/trainers/by-service/${serviceId}`);
-                    if (!response.ok) throw new Error("Eğitmen listesi alınamadı.");
+            duration = parseInt(serviceSelect.options[serviceSelect.selectedIndex].dataset.duration);
+            priceBox.value = serviceSelect.options[serviceSelect.selectedIndex].dataset.price;
 
-                    const data = await response.json();
+            const res = await fetch(`/api/trainers/by-service/${id}`);
+            const list = await res.json();
 
-                    const placeholder = document.createElement('option');
-                    placeholder.value = "";
-                    placeholder.textContent = "Eğitmen seçin";
-                    trainerSelect.appendChild(placeholder);
-
-                    if (!data || data.length === 0) {
-                        const opt = document.createElement('option');
-                        opt.value = "";
-                        opt.textContent = "Bu hizmet için tanımlı eğitmen yok";
-                        trainerSelect.appendChild(opt);
-                        return;
-                    }
-
-                    for (const t of data) {
-                        const opt = document.createElement('option');
-                        opt.value = t.id;
-                        opt.textContent = `${t.fullName} (${t.specialty ?? "Genel"})`;
-
-                        if (selectedTrainerId && Number(selectedTrainerId) === Number(t.id)) {
-                            opt.selected = true;
-                        }
-                        trainerSelect.appendChild(opt);
-                    }
-                } catch (err) {
-                    console.error(err);
-                    const opt = document.createElement('option');
-                    opt.value = "";
-                    opt.textContent = "Eğitmenler yüklenirken hata oluştu";
-                    trainerSelect.appendChild(opt);
-                }
-            }
-
-            serviceSelect.addEventListener('change', function () {
-                const selected = this.options[this.selectedIndex];
-                const serviceId = this.value;
-
-                if (selected && selected.dataset.price && priceInput) {
-                    // Kullanıcıya TR formatında gösterelim (virgül)
-                    priceInput.value = selected.dataset.price.replace('.', ',');
-                } else if (priceInput) {
-                    priceInput.value = "";
-                }
-
-                loadTrainers(serviceId, null);
+            trainerSelect.innerHTML = "<option value=''>Eğitmen Seç</option>";
+            list.forEach(t => {
+                trainerSelect.innerHTML += `<option value="${t.id}">${t.fullName}</option>`;
             });
 
-            // Post-back sonrası seçimleri koru
-            const initialServiceId = '@Model.ServiceId';
-            const initialTrainerId = '@Model.TrainerId';
+            loadSlots();
+        });
 
-            if (initialServiceId && initialServiceId !== '0') {
-                serviceSelect.value = initialServiceId;
+        dateSelect.addEventListener("change", loadSlots);
+        trainerSelect.addEventListener("change", loadSlots);
 
-                const selected = serviceSelect.options[serviceSelect.selectedIndex];
-                if (selected && selected.dataset.price && priceInput) {
-                    priceInput.value = selected.dataset.price.replace('.', ',');
-                }
+        async function loadSlots() {
+            slotArea.innerHTML = "";
+            slotStart.value = "";
 
-                loadTrainers(initialServiceId, initialTrainerId);
+            const trainerId = trainerSelect.value;
+            const serviceId = serviceSelect.value;
+            const date = dateSelect.value; // yyyy-MM-dd
+
+            if (!trainerId || !serviceId || !date) return;
+
+            // duration'ı göndermesek bile serviceId ile sunucu buluyor.
+            const res = await fetch(`/api/trainers/free-slots?trainerId=${trainerId}&date=${date}&serviceId=${serviceId}&duration=${duration}`);
+            const slots = await res.json();
+
+            if (!Array.isArray(slots) || slots.length === 0) {
+                slotArea.innerHTML = `<div class='alert alert-warning'>Bu tarihte uygun randevu yok.</div>`;
+                return;
             }
-        })();
+
+            slots.forEach(s => {
+                const hour = s.substring(11,16);
+                slotArea.innerHTML += `<button type="button" class="cf-slot-btn" data-val="${s}">${hour}</button>`;
+            });
+
+            // Buton tıklama
+            [...slotArea.querySelectorAll(".cf-slot-btn")].forEach(btn => {
+                btn.addEventListener("click", () => {
+                    [...slotArea.querySelectorAll(".cf-slot-btn")].forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    // Sunucu yerel string bekliyor (Z yok)
+                    slotStart.value = btn.dataset.val;
+                });
+            });
+        }
     </script>
 }
+
+<style>
+    /* CrossFit kırmızı-siyah tema */
+    .cf-title {
+        color: #d90000;
+        font-weight: 800;
+        text-transform: uppercase;
+        text-align: center;
+        letter-spacing: .5px
+    }
+
+    .cf-card {
+        background: #0f0f10;
+        color: #fff;
+        border-radius: 12px;
+        border: 2px solid #d90000
+    }
+
+    .cf-label {
+        color: #ff4a4a;
+        font-weight: 700
+    }
+
+    .cf-input {
+        background: #1a1a1a;
+        color: #fff;
+        border: 1px solid #d90000;
+        border-radius: 8px;
+        padding: .6rem .8rem
+    }
+
+        .cf-input:focus {
+            outline: none;
+            border-color: #ff2a2a;
+            box-shadow: 0 0 0 3px rgba(255,42,42,.2)
+        }
+
+    .cf-btn-primary {
+        background: #d90000;
+        border: none;
+        padding: .8rem 1rem;
+        font-weight: 800;
+        border-radius: 10px
+    }
+
+        .cf-btn-primary:hover {
+            background: #ff1a1a
+        }
+
+    .cf-slot-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px
+    }
+
+    .cf-slot-btn {
+        background: #10d410;
+        color: #000;
+        border: none;
+        padding: .6rem 1rem;
+        border-radius: 8px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: .15s
+    }
+
+        .cf-slot-btn:hover {
+            transform: translateY(-1px)
+        }
+
+        .cf-slot-btn.active {
+            outline: 3px solid #fff;
+            box-shadow: 0 0 0 3px rgba(255,42,42,.35) inset
+        }
+</style>

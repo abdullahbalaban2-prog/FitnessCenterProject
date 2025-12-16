@@ -1,61 +1,48 @@
 ﻿@model FitnessCenterProject.Models.Trainer
 
 @{
-    ViewData["Title"] = "Eğitmen Düzenle";
+    ViewData["Title"] = "Antrenörü Düzenle";
 }
 
-<h1 class="mb-3">Eğitmen Düzenle</h1>
+<h1 class="arena-page-title neon-red mb-4">Antrenörü Düzenle</h1>
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="arena-form-container col-md-6">
 
-            @* Id gizli alan *@
-            <input type="hidden" asp-for="Id" />
+    <form asp-action="Edit" method="post">
 
-            <div class="mb-3">
-                <label asp-for="FirstName" class="form-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
+        <input type="hidden" asp-for="Id" />
 
-            <div class="mb-3">
-                <label asp-for="LastName" class="form-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="FirstName" class="form-label arena-label"></label>
+            <input asp-for="FirstName" class="form-control arena-input" />
+        </div>
 
-            <div class="mb-3">
-                <label asp-for="Specialty" class="form-label"></label>
-                <input asp-for="Specialty" class="form-control" />
-                <span asp-validation-for="Specialty" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="LastName" class="form-label arena-label"></label>
+            <input asp-for="LastName" class="form-control arena-input" />
+        </div>
 
-            <div class="mb-3">
-                <label asp-for="Bio" class="form-label"></label>
-                <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Bio" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Specialty" class="form-label arena-label"></label>
+            <input asp-for="Specialty" class="form-control arena-input" />
+        </div>
 
-            <div class="mb-3">
-                <label asp-for="FitnessCenterId" class="form-label">Spor Salonu</label>
-                <select asp-for="FitnessCenterId"
-                        class="form-select"
-                        asp-items="ViewBag.FitnessCenterId">
-                    <option value="">-- Spor Salonu Seçin --</option>
-                </select>
-                <span asp-validation-for="FitnessCenterId" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Bio" class="form-label arena-label"></label>
+            <textarea asp-for="Bio" class="form-control arena-input"></textarea>
+        </div>
 
-            <button type="submit" class="btn btn-primary">Kaydet</button>
-            <a asp-action="Index" class="btn btn-secondary ms-2">Listeye Dön</a>
-        </form>
-    </div>
+        <div class="mb-3">
+            <label class="form-label arena-label">Spor Salonu</label>
+            <select asp-for="FitnessCenterId"
+                    asp-items="@ViewBag.FitnessCenterId"
+                    class="form-select arena-input">
+                <option value="">-- Salon Seçiniz --</option>
+            </select>
+        </div>
+
+        <button type="submit" class="arena-btn-lg">Kaydet</button>
+        <a asp-action="Index" class="arena-btn-outline ms-2">Geri Dön</a>
+
+    </form>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

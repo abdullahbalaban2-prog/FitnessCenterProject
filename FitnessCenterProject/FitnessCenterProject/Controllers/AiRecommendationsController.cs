@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using FitnessCenterProject.Data;
 using FitnessCenterProject.Models;
+using FitnessCenterProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,28 +15,19 @@ namespace FitnessCenterProject.Controllers
     public class AiRecommendationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAiService _aiService;
 
-        public AiRecommendationsController(ApplicationDbContext context)
+        public AiRecommendationsController(ApplicationDbContext context, IAiService aiService)
         {
             _context = context;
+            _aiService = aiService;
         }
 
-        // GET: /AiRecommendations/Create
         public IActionResult Create()
         {
-            var model = new AiRecommendation
-            {
-                Height = 170,
-                Weight = 70,
-                BodyType = "Normal",
-                Goal = "Genel",
-                RequestType = "Egzersiz + Diyet"
-            };
-
-            return View(model);
+            return View(new AiRecommendation());
         }
 
-        // POST: /AiRecommendations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AiRecommendation model)
@@ -44,28 +36,21 @@ namespace FitnessCenterProject.Controllers
             if (string.IsNullOrWhiteSpace(userId))
                 return Challenge();
 
-            // Kullanıcıdan gelmiş olabilecek validation hatasını temizle
-            // (UserId formdan gelmeyecek, biz server'da set ediyoruz)
             ModelState.Remove(nameof(AiRecommendation.UserId));
 
-            // Server tarafı alanlar
             model.UserId = userId;
             model.CreatedAt = DateTime.Now;
 
-            // Demo AI çıktısı (boş gelirse üret)
-            if (string.IsNullOrWhiteSpace(model.GeneratedPlan))
-            {
-                model.GeneratedPlan =
-                    $"[Demo AI]\n" +
-                    $"Boy: {model.Height} cm, Kilo: {model.Weight} kg\n" +
-                    $"Vücut Tipi: {model.BodyType}\n" +
-                    $"Hedef: {model.Goal}\n" +
-                    $"İstek: {model.RequestType}\n\n" +
-                    $"Öneri:\n" +
-                    $"- 3 gün full-body (squat, bench, row)\n" +
-                    $"- 2 gün 30 dk yürüyüş/kardiyo\n" +
-                    $"- Günlük protein: 1.6g/kg hedefleyin.";
-            }
+            var prompt =
+                $"Boy: {model.Height} cm\n" +
+                $"Kilo: {model.Weight} kg\n" +
+                $"Vücut Tipi: {model.BodyType}\n" +
+                $"Hedef: {model.Goal}\n" +
+                $"İstek Tipi: {model.RequestType}\n" +
+                $"Bu bilgilere göre kişisel fitness ve diyet planı öner.";
+
+            model.GeneratedPlan = await _aiService.GeneratePlanAsync(prompt);
+
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -76,16 +61,13 @@ namespace FitnessCenterProject.Controllers
             return RedirectToAction(nameof(MyRecommendations));
         }
 
-        // GET: /AiRecommendations/MyRecommendations
         public async Task<IActionResult> MyRecommendations()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrWhiteSpace(userId))
-                return Challenge();
 
             var list = await _context.AiRecommendations
-                .Where(a => a.UserId == userId)
-                .OrderByDescending(a => a.CreatedAt)
+                .Where(x => x.UserId == userId)
+                .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
 
             return View(list);

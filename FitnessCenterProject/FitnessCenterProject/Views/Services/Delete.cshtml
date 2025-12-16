@@ -1,38 +1,24 @@
 ﻿@model FitnessCenterProject.Models.Service
-
 @{
     ViewData["Title"] = "Hizmet Sil";
 }
 
-<h1>Hizmet Sil</h1>
+<h1 class="arena-page-title neon-red mb-4">Hizmeti Sil</h1>
 
-<hr />
+<div class="arena-card p-4">
 
-<h4>Bu hizmeti silmek istediğinize emin misiniz?</h4>
+    <h2 class="fw-bold text-danger">Silmek istediğinize emin misiniz?</h2>
+    <hr class="arena-divider" />
 
-<div class="card mt-3">
-    <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Name)</dt>
-            <dd class="col-sm-9">@Model.Name</dd>
+    <p><strong>Hizmet:</strong> @Model.Name</p>
+    <p><strong>Ücret:</strong> @Model.Price ₺</p>
+    <p><strong>Salon:</strong> @Model.FitnessCenter?.Name</p>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Description)</dt>
-            <dd class="col-sm-9">@Model.Description</dd>
+    <form asp-action="Delete" method="post" class="mt-3">
+        <input type="hidden" asp-for="Id" />
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(m => m.DurationMinutes)</dt>
-            <dd class="col-sm-9">@Model.DurationMinutes</dd>
+        <button type="submit" class="arena-btn-sm-danger">Evet, Sil</button>
+        <a asp-action="Index" class="arena-btn-outline ms-2">İptal</a>
+    </form>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Price)</dt>
-            <dd class="col-sm-9">@Model.Price</dd>
-
-            <dt class="col-sm-3">Spor Salonu</dt>
-            <dd class="col-sm-9">@Model.FitnessCenter?.Name</dd>
-        </dl>
-    </div>
 </div>
-
-<form asp-action="Delete" method="post" class="mt-3">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Sil</button>
-    <a asp-action="Index" class="btn btn-secondary ms-2">Vazgeç</a>
-</form>

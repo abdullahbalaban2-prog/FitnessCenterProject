@@ -2,97 +2,92 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Spor Salonu Yönetim ve Randevu Sistemi</h1>
-        <p class="col-md-8 fs-5 mt-3">
-            FitnessCenterProject ile spor salonlarınızı, hizmetlerinizi, antrenörlerinizi ve üye randevularınızı
-            tek bir ekrandan yönetin. Üyelere özel randevu ve yapay zeka destekli öneri sistemi ile modern bir spor deneyimi sunun.
-        </p>
-        <div class="mt-4">
-            <a class="btn btn-primary btn-lg me-2"
-               asp-controller="FitnessCenters" asp-action="Index">
-                Salonları Gör
-            </a>
-            <a class="btn btn-outline-primary btn-lg"
-               asp-controller="Appointments" asp-action="MyAppointments">
-                Randevularımı Gör
-            </a>
-        </div>
+<div class="hero-section arena-hero text-center text-light py-5">
+    <h1 class="display-4 fw-bold neon-red mb-3">FITNESS ARENA</h1>
+    <p class="lead arena-subtitle mb-4">
+        Gücünü keşfet. Hedef belirle. Disiplinle ilerle.
+        Arena tarzı spor deneyimi ve akıllı randevu sistemi burada!
+    </p>
+
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a class="btn arena-btn-lg" asp-controller="Appointments" asp-action="Create">
+            Randevu Al
+        </a>
+        <a class="btn arena-btn-outline" asp-controller="FitnessCenters" asp-action="Index">
+            Salonları İncele
+        </a>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Salon ve Hizmet Yönetimi</h5>
-                <p class="card-text">
-                    Farklı spor salonlarını, çalışma saatlerini ve sundukları hizmetleri (fitness, yoga, pilates vb.)
-                    kolayca tanımlayın ve yönetin.
+<div class="container mt-5">
+
+    <h2 class="section-title mb-4 neon-border">Öne Çıkan Özellikler</h2>
+
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+            <div class="arena-card">
+                <h4 class="card-title">🏋️‍♂️ Profesyonel Salon Yönetimi</h4>
+                <p>
+                    Çalışma saatleri, hizmetler ve açıklamalar ile tamamen yönetilebilir spor salonu yapısı.
                 </p>
-                <a asp-controller="FitnessCenters" asp-action="Index" class="btn btn-sm btn-primary">
-                    Salon Yönetimine Git
+                <a class="btn arena-btn-sm" asp-controller="FitnessCenters" asp-action="Index">
+                    Salonlara Git
                 </a>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Randevu ve Antrenör Takibi</h5>
-                <p class="card-text">
-                    Üyeleriniz, uygun antrenörlere ve hizmetlere göre randevu alabilir;
-                    admin ise tüm randevuları onaylayabilir veya yönetebilir.
+        <div class="col-lg-4">
+            <div class="arena-card">
+                <h4 class="card-title">🥊 Akıllı Randevu Sistemi</h4>
+                <p>
+                    Antrenörlerin uygun saatlerine göre otomatik saat önerisi.
+                    MHRS benzeri hızlı & doğru randevu deneyimi.
                 </p>
-                <a asp-controller="Appointments" asp-action="MyAppointments" class="btn btn-sm btn-primary me-2">
+                <a class="btn arena-btn-sm" asp-controller="Appointments" asp-action="MyAppointments">
                     Randevularım
                 </a>
-                <a asp-controller="Trainers" asp-action="Index" class="btn btn-sm btn-outline-primary">
-                    Antrenörleri Gör
-                </a>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Yapay Zekâ Destekli Öneriler</h5>
-                <p class="card-text">
-                    Boy, kilo, vücut tipi ve hedef bilgilerine göre,
-                    kullanıcılara yapay zekâ destekli egzersiz veya diyet önerileri sunmak için altyapı hazır.
-                    Bu bölüm proje kapsamında geliştirilecektir.
+        <div class="col-lg-4">
+            <div class="arena-card">
+                <h4 class="card-title">🤖 Yapay Zekâ Önerileri</h4>
+                <p>
+                    Boy, kilo, vücut tipi ve hedef bilgilerine göre
+                    kişiye özel antrenman + diyet önerileri.
                 </p>
-                <a class="btn btn-sm btn-secondary disabled" href="#">
-                    Yakında: AI Öneri Sayfası
+                <a class="btn arena-btn-sm" asp-controller="AiRecommendations" asp-action="Create">
+                    AI Önerisi Al
                 </a>
             </div>
         </div>
+
     </div>
 </div>
 
-<div class="mt-5">
-    <h3 class="mb-3">Başlıca Özellikler</h3>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-            🎯 <strong>Salon Tanımlama:</strong> Çalışma saatleri, adres, açıklama ve bağlı hizmetler.
-        </li>
-        <li class="list-group-item">
-            🧑‍🏫 <strong>Antrenör Yönetimi:</strong> Uzmanlık alanları, bağlı oldukları salonlar ve müsaitlik takvimi.
-        </li>
-        <li class="list-group-item">
-            📅 <strong>Akıllı Randevu Sistemi:</strong> Çakışan randevuların engellenmesi, onay / iptal mekanizması.
-        </li>
-        <li class="list-group-item">
-            🔐 <strong>Rol Bazlı Yetkilendirme:</strong> Admin ve normal üye rolleri, güvenli erişim.
-        </li>
-        <li class="list-group-item">
-            📊 <strong>REST API + LINQ:</strong> Eğitmen listeleri ve filtrelenmiş veriler için API uçları.
-        </li>
-        <li class="list-group-item">
-            🤖 <strong>Yapay Zekâ Entegrasyonu:</strong> Egzersiz / diyet planı için AI tabanlı öneri altyapısı.
-        </li>
-    </ul>
+<div class="container mt-5">
+    <h2 class="section-title mb-4 neon-border">Spor Arena Deneyimi</h2>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="arena-info-box">
+                <h4 class="fw-bold neon-red">🔥 Sert antrenman, sağlam disiplin</h4>
+                <p>
+                    CrossFit, MMA ve fonksiyonel antrenmanları birleştiren hibrit spor sistemi ile
+                    güçlenmeye hazır ol.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="arena-info-box">
+                <h4 class="fw-bold neon-red">🎯 Performans odaklı yaklaşım</h4>
+                <p>
+                    Sistem, antrenörlerin uygunluğunu hesaplayarak çakışmaları engeller ve
+                    en verimli saatleri otomatik öne çıkarır.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
