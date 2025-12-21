@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FitnessCenterProject.Data;
+using FitnessCenterProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,9 +20,8 @@ namespace FitnessCenterProject.Controllers
             _context = context;
         }
 
-        // ---------------------------------------------------------------
         // 1) Hizmete göre eğitmenleri getir
-        // ---------------------------------------------------------------
+        // GET: /api/trainers/by-service/5
         [HttpGet("by-service/{serviceId:int}")]
         public async Task<IActionResult> GetByService(int serviceId)
         {
@@ -39,14 +39,9 @@ namespace FitnessCenterProject.Controllers
             return Ok(trainers);
         }
 
-        // ---------------------------------------------------------------
         // 2) Eğitmenin bir gündeki boş saatlerini getir (MHRS mantığı)
-        // Parametreler:
-        //  - trainerId
-        //  - date: "yyyy-MM-dd"
-        //  - duration: dakika (isteğe bağlı; verilmezse hizmetin süresi kullanılmalı)
-        //  - serviceId: duration yoksa zorunlu
-        // ---------------------------------------------------------------
+        // GET: /api/trainers/free-slots?trainerId=1&date=2025-12-27&duration=60
+        // Not: SADECE Approved randevular slot kapatır.
         [HttpGet("free-slots")]
         public async Task<IActionResult> GetFreeSlots(
             int trainerId,
@@ -57,13 +52,6 @@ namespace FitnessCenterProject.Controllers
             if (!DateTime.TryParse(date, out var selectedDate))
                 return BadRequest("Invalid date.");
 
-            // Eğitmenin o gün çalışma aralığı
-            var availability = await _context.TrainerAvailabilities
-                .FirstOrDefaultAsync(a => a.TrainerId == trainerId && a.DayOfWeek == selectedDate.DayOfWeek);
-
-            if (availability == null)
-                return Ok(new List<string>()); // O gün çalışmıyor
-
             int durMin = duration ?? 0;
             if (durMin <= 0)
             {
@@ -73,38 +61,48 @@ namespace FitnessCenterProject.Controllers
                 durMin = svc.DurationMinutes;
             }
 
-            var startSpan = availability.StartTime;
-            var endSpan = availability.EndTime;
             var step = TimeSpan.FromMinutes(durMin);
 
-            // Sadece ONAYLI randevular slotları kapatsın
+            // ✅ Aynı gün birden fazla çalışma aralığını destekle
+            var availabilities = await _context.TrainerAvailabilities
+                .Where(a => a.TrainerId == trainerId && a.DayOfWeek == selectedDate.DayOfWeek)
+                .OrderBy(a => a.StartTime)
+                .ToListAsync();
+
+            if (availabilities.Count == 0)
+                return Ok(new List<string>()); // O gün çalışmıyor
+
+            // ✅ Sadece ONAYLI randevular slot kapatsın
             var approved = await _context.Appointments
                 .Where(a => a.TrainerId == trainerId
-                            && a.Status == Models.AppointmentStatus.Approved
+                            && a.Status == AppointmentStatus.Approved
                             && a.StartDateTime.Date == selectedDate.Date)
                 .Select(a => new { a.StartDateTime, a.EndDateTime })
                 .ToListAsync();
 
             var result = new List<string>();
 
-            for (var t = startSpan; t.Add(step) <= endSpan; t = t.Add(step))
+            foreach (var av in availabilities)
             {
-                var slotStart = selectedDate.Date + t;      // yerel
-                var slotEnd = slotStart.Add(step);
+                // av.StartTime - av.EndTime aralığında slot üret
+                for (var t = av.StartTime; t.Add(step) <= av.EndTime; t = t.Add(step))
+                {
+                    var slotStart = selectedDate.Date + t;  // LOCAL
+                    var slotEnd = slotStart.Add(step);
 
-                bool clash = approved.Any(a =>
-                    slotStart < a.EndDateTime && slotEnd > a.StartDateTime);
+                    bool clash = approved.Any(a =>
+                        slotStart < a.EndDateTime && slotEnd > a.StartDateTime);
 
-                if (!clash)
-                    result.Add(slotStart.ToString("yyyy-MM-ddTHH:mm")); // Z YOK
+                    if (!clash)
+                        result.Add(slotStart.ToString("yyyy-MM-ddTHH:mm")); // "Z" yok (UTC değil)
+                }
             }
 
             return Ok(result);
         }
 
-        // ---------------------------------------------------------------
-        // 3) Geriye dönük uyumluluk: /api/trainers/slots ... (alias)
-        // ---------------------------------------------------------------
+        // 3) Alias (geri uyumluluk)
+        // GET: /api/trainers/slots?trainerId=1&date=2025-12-27&duration=60
         [HttpGet("slots")]
         public Task<IActionResult> GetSlotsAlias(
             int trainerId, string date, int duration, int? serviceId = null)

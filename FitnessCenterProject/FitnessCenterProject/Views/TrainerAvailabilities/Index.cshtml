@@ -1,46 +1,89 @@
 ﻿@model IEnumerable<FitnessCenterProject.Models.TrainerAvailability>
+@using System.Globalization
 
-<h1 class="cf-title mb-4">Eğitmen Müsaitlikleri</h1>
+@{
+    ViewData["Title"] = "Eğitmen Müsaitlikleri";
+    int? selectedTrainerId = ViewBag.SelectedTrainerId as int?;
+}
 
-<a asp-action="Create" class="cf-btn-primary mb-3">Yeni Müsaitlik Ekle</a>
+<h1 class="arena-page-title neon-red mb-4">Eğitmen Müsaitlikleri</h1>
 
-<div class="table-responsive">
-    <table class="table table-dark table-striped table-hover cf-table">
-        <thead>
-            <tr>
-                <th>Eğitmen</th>
-                <th>Gün</th>
-                <th>Başlangıç</th>
-                <th>Bitiş</th>
-                <th style="width:180px;">İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var a in Model)
-            {
-                <tr>
-                    <td>@a.Trainer.FullName</td>
-                    <td>@a.DayOfWeek</td>
-                    <td>@a.StartTime.ToString(@"hh\:mm")</td>
-                    <td>@a.EndTime.ToString(@"hh\:mm")</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@a.Id" class="btn btn-warning btn-sm">Düzenle</a>
-                        <a asp-action="Delete" asp-route-id="@a.Id" class="btn btn-danger btn-sm">Sil</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<form method="get" class="row g-3 align-items-end mb-4">
+    <div class="col-md-6">
+        <label class="form-label text-light fw-bold">Eğitmen</label>
+        <select class="form-select" name="trainerId" asp-items="(SelectList)ViewBag.TrainerId">
+            <option value="">-- Tümü --</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">Filtrele</button>
+    </div>
+
+    <div class="col-md-3">
+        <a class="btn btn-outline-secondary w-100" asp-action="Index">Temizle</a>
+    </div>
+</form>
+
+<div class="d-flex flex-wrap gap-2 mb-4">
+    <a class="btn btn-success"
+       asp-action="Create"
+       asp-route-trainerId="@(selectedTrainerId)">
+        Yeni Müsaitlik Ekle
+    </a>
+
+    @if (selectedTrainerId.HasValue)
+    {
+        <form asp-action="CreateDefault" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="trainerId" value="@selectedTrainerId.Value" />
+            <button type="submit" class="btn btn-warning">
+                Varsayılan Program Oluştur (08:00–22:00 Pzt–Cmt)
+            </button>
+        </form>
+    }
 </div>
 
-<style>
-    .cf-table thead {
-        background: #d90000 !important;
-        color: white;
-        font-weight: bold;
-    }
-
-    .cf-table tbody tr:hover {
-        background: #550000 !important;
-    }
-</style>
+@if (!Model.Any())
+{
+    <div class="alert alert-warning fw-bold text-center">
+        Müsaitlik kaydı bulunamadı.
+        @if (!selectedTrainerId.HasValue)
+        {
+            <div class="small mt-2">Bir eğitmen seçip filtrelersen yönetmek daha kolay olur.</div>
+        }
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Eğitmen</th>
+                    <th>Gün</th>
+                    <th>Başlangıç</th>
+                    <th>Bitiş</th>
+                    <th class="text-end">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@(a.Trainer?.FirstName + " " + a.Trainer?.LastName)</td>
+                        <td>@a.DayOfWeek</td>
+                        <td>@a.StartTime.ToString(@"hh\:mm")</td>
+                        <td>@a.EndTime.ToString(@"hh\:mm")</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-info"
+                               asp-action="Edit" asp-route-id="@a.Id">Düzenle</a>
+                            <a class="btn btn-sm btn-outline-danger"
+                               asp-action="Delete" asp-route-id="@a.Id">Sil</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

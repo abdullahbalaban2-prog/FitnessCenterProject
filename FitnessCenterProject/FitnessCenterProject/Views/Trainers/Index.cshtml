@@ -41,9 +41,17 @@ else
 
                     <p class="text-light small">@t.Bio</p>
 
-                    <div class="arena-card-footer d-flex justify-content-between mt-3">
+                    <div class="arena-card-footer d-flex justify-content-between mt-3 flex-wrap gap-2">
                         <a class="arena-btn-sm" asp-action="Details" asp-route-id="@t.Id">Detay</a>
                         <a class="arena-btn-sm-warning" asp-action="Edit" asp-route-id="@t.Id">Düzenle</a>
+
+                        <a class="arena-btn-sm"
+                           asp-controller="TrainerAvailabilities"
+                           asp-action="Index"
+                           asp-route-trainerId="@t.Id">
+                            Müsaitlik
+                        </a>
+
                         <a class="arena-btn-sm-danger" asp-action="Delete" asp-route-id="@t.Id">Sil</a>
                     </div>
 

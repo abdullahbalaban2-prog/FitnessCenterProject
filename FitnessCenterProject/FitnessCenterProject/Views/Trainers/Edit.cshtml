@@ -1,48 +1,114 @@
 ﻿@model FitnessCenterProject.Models.Trainer
+@using FitnessCenterProject.Models
+@using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
-    ViewData["Title"] = "Antrenörü Düzenle";
+    ViewData["Title"] = "Antrenör Düzenle";
+    var services = ViewBag.ServicesList as List<Service> ?? new List<Service>();
+    var selected = ViewBag.SelectedServices as HashSet<int> ?? new HashSet<int>();
 }
 
-<h1 class="arena-page-title neon-red mb-4">Antrenörü Düzenle</h1>
+<h1 class="arena-page-title neon-red mb-4">Antrenör Düzenle</h1>
 
-<div class="arena-form-container col-md-6">
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="arena-card p-4">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <form asp-action="Edit" method="post">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-light fw-bold">Ad</label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
 
-        <input type="hidden" asp-for="Id" />
+                    <div class="col-md-6">
+                        <label class="form-label text-light fw-bold">Soyad</label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="FirstName" class="form-label arena-label"></label>
-            <input asp-for="FirstName" class="form-control arena-input" />
+                    <div class="col-md-6">
+                        <label class="form-label text-light fw-bold">Uzmanlık</label>
+                        <input asp-for="Specialty" class="form-control" />
+                        <span asp-validation-for="Specialty" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-light fw-bold">Salon</label>
+                        <select asp-for="FitnessCenterId" class="form-select" asp-items="(SelectList)@ViewData[" FitnessCenterId"]">
+                            <option value="">-- Salon Seç --</option>
+                        </select>
+                        <span asp-validation-for="FitnessCenterId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label text-light fw-bold">Bio</label>
+                        <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Bio" class="text-danger"></span>
+                    </div>
+
+                    <hr class="my-3" />
+
+                    <div class="col-12">
+                        <label class="form-label text-light fw-bold">Hizmetler</label>
+                        @if (services.Count == 0)
+                        {
+                            <div class="alert alert-warning">Henüz hizmet yok.</div>
+                        }
+                        else
+                        {
+                            <div class="row g-2">
+                                @foreach (var s in services)
+                                {
+                                    var isChecked = selected.Contains(s.Id);
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="selectedServices"
+                                                   value="@s.Id"
+                                                   id="svc_@s.Id"
+                                            @(isChecked ? "checked" : "") />
+                                            <label class="form-check-label text-light" for="svc_@s.Id">
+                                                @s.Name (@s.DurationMinutes dk)
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="createDefaultAvailability" value="true" id="defAvail" />
+                            <label class="form-check-label text-light" for="defAvail">
+                                Eksik günler varsa varsayılan programı tamamla (08:00–22:00, Pzt–Cmt)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-12 d-flex flex-wrap gap-2 mt-4">
+                        <button type="submit" class="btn btn-success flex-grow-1">Kaydet</button>
+
+                        <a class="btn btn-outline-warning"
+                           asp-controller="TrainerAvailabilities"
+                           asp-action="Index"
+                           asp-route-trainerId="@Model.Id">
+                            Müsaitlikleri Yönet
+                        </a>
+
+                        <a asp-action="Index" class="btn btn-outline-secondary">Geri</a>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="mb-3">
-            <label asp-for="LastName" class="form-label arena-label"></label>
-            <input asp-for="LastName" class="form-control arena-input" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Specialty" class="form-label arena-label"></label>
-            <input asp-for="Specialty" class="form-control arena-input" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Bio" class="form-label arena-label"></label>
-            <textarea asp-for="Bio" class="form-control arena-input"></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label arena-label">Spor Salonu</label>
-            <select asp-for="FitnessCenterId"
-                    asp-items="@ViewBag.FitnessCenterId"
-                    class="form-select arena-input">
-                <option value="">-- Salon Seçiniz --</option>
-            </select>
-        </div>
-
-        <button type="submit" class="arena-btn-lg">Kaydet</button>
-        <a asp-action="Index" class="arena-btn-outline ms-2">Geri Dön</a>
-
-    </form>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

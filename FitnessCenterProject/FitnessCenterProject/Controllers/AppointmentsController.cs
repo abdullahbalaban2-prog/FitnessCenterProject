@@ -54,19 +54,58 @@ namespace FitnessCenterProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Appointment model)
         {
+            // POST'ta ViewBag boş kalıp NullReference vermesin
+            ViewBag.Services = await _context.Services.ToListAsync();
+
             var service = await _context.Services.FindAsync(model.ServiceId);
             if (service == null)
             {
                 ModelState.AddModelError("", "Hizmet bulunamadı.");
-                ViewBag.Services = await _context.Services.ToListAsync();
                 return View(model);
             }
 
-            // Buraya düşerse StartDateTime değerini yerel kabul ediyoruz.
-            // (Ön tarafta Z'li ISO kullanılmıyor.)
+            // ✅ 3 saat geri kayma fix:
+            // Eğer istemciden UTC (Z) gelmişse yerel saate çevir
+            if (model.StartDateTime.Kind == DateTimeKind.Utc)
+                model.StartDateTime = model.StartDateTime.ToLocalTime();
+
+            // Süre + bitiş
+            var end = model.StartDateTime.AddMinutes(service.DurationMinutes);
+
+            // ✅ Eğitmen o gün çalışıyor mu? (Müsaitlik kontrolü)
+            var availability = await _context.TrainerAvailabilities.FirstOrDefaultAsync(a =>
+                a.TrainerId == model.TrainerId &&
+                a.DayOfWeek == model.StartDateTime.DayOfWeek);
+
+            if (availability == null)
+            {
+                ModelState.AddModelError("", "Eğitmen bu gün çalışmıyor.");
+                return View(model);
+            }
+
+            // Seçilen saat çalışma aralığında mı?
+            if (model.StartDateTime.TimeOfDay < availability.StartTime || end.TimeOfDay > availability.EndTime)
+            {
+                ModelState.AddModelError("", "Seçtiğiniz saat eğitmenin çalışma saatleri dışında.");
+                return View(model);
+            }
+
+            // ✅ Slot çakışması: sadece ONAYLI randevular saati kapatsın
+            var conflict = await _context.Appointments.AnyAsync(a =>
+                a.TrainerId == model.TrainerId &&
+                a.Status == AppointmentStatus.Approved &&
+                model.StartDateTime < a.EndDateTime &&
+                end > a.StartDateTime);
+
+            if (conflict)
+            {
+                ModelState.AddModelError("", "Bu saat dolu. Lütfen başka bir saat seçin.");
+                return View(model);
+            }
+
             model.MemberId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             model.Price = service.Price;
-            model.EndDateTime = model.StartDateTime.AddMinutes(service.DurationMinutes);
+            model.EndDateTime = end;
             model.Status = AppointmentStatus.Pending;
 
             _context.Appointments.Add(model);
