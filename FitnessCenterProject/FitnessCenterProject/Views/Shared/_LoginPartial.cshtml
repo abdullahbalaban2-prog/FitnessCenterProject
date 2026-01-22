@@ -7,7 +7,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark"
+            <a class="nav-link text-light"
                asp-area="Identity"
                asp-page="/Account/Manage/Index"
                title="Hesabım">
@@ -20,7 +20,7 @@
                   asp-page="/Account/Logout"
                   asp-route-returnUrl="@(Url.Action("Index", "Home", new { area = "" }))"
                   method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">
+                <button type="submit" class="nav-link btn btn-link text-light">
                     Çıkış
                 </button>
             </form>
@@ -29,14 +29,14 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark"
+            <a class="nav-link text-light"
                asp-area="Identity"
                asp-page="/Account/Register">
                 Kayıt Ol
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark"
+            <a class="nav-link text-light"
                asp-area="Identity"
                asp-page="/Account/Login">
                 Giriş Yap

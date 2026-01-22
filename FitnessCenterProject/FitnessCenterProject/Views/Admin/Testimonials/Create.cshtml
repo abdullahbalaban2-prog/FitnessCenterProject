@@ -1,0 +1,42 @@
+@model FitnessCenterProject.ViewModels.TestimonialViewModel
+
+@{
+    ViewData["Title"] = "Yeni Referans";
+}
+
+<h1 class="section-title mb-3">Yeni Referans</h1>
+
+<form asp-action="Create" method="post" class="card p-4">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CompanyOrProject" class="form-label"></label>
+        <input asp-for="CompanyOrProject" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Comment" class="form-label"></label>
+        <textarea asp-for="Comment" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Rating" class="form-label"></label>
+        <input asp-for="Rating" class="form-control" />
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="IsApproved" class="form-check-input" />
+        <label asp-for="IsApproved" class="form-check-label">Onayla</label>
+    </div>
+
+    <button class="btn btn-dark" type="submit">Kaydet</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">İptal</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,58 @@
+@model FitnessCenterProject.ViewModels.ProjectUpsertViewModel
+
+@{
+    ViewData["Title"] = "Yeni Proje";
+}
+
+<h1 class="section-title mb-3">Yeni Proje</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="card p-4">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="CategoryId" class="form-label">Kategori</label>
+            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories"></select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Location" class="form-label"></label>
+            <input asp-for="Location" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Year" class="form-label"></label>
+            <input asp-for="Year" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="AreaM2" class="form-label">Alan (m²)</label>
+            <input asp-for="AreaM2" class="form-control" />
+        </div>
+        <div class="col-12">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="col-12">
+            <label asp-for="CoverImage" class="form-label">Kapak Görseli</label>
+            <input asp-for="CoverImage" type="file" class="form-control" />
+            <span asp-validation-for="CoverImage" class="text-danger"></span>
+        </div>
+        <div class="col-12 form-check">
+            <input asp-for="IsFeatured" class="form-check-input" />
+            <label asp-for="IsFeatured" class="form-check-label">Öne çıkar</label>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-dark" type="submit">Kaydet</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">İptal</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

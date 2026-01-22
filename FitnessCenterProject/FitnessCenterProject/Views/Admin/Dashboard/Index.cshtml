@@ -1,0 +1,34 @@
+@model FitnessCenterProject.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Gösterge Paneli";
+}
+
+<h1 class="section-title mb-4">Gösterge Paneli</h1>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="admin-card">
+            <h6 class="text-muted">Toplam Proje</h6>
+            <h3>@Model.ProjectCount</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card">
+            <h6 class="text-muted">Okunmamış Mesaj</h6>
+            <h3>@Model.UnreadMessages</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card">
+            <h6 class="text-muted">Okunmamış Teklif</h6>
+            <h3>@Model.UnreadQuotes</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card">
+            <h6 class="text-muted">Onaysız Referans</h6>
+            <h3>@Model.PendingTestimonials</h3>
+        </div>
+    </div>
+</div>

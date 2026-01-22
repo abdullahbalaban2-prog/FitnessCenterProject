@@ -1,0 +1,42 @@
+@model IEnumerable<FitnessCenterProject.Models.Testimonial>
+
+@{
+    ViewData["Title"] = "Referanslar";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="section-title">Referanslar</h1>
+    <a class="btn btn-dark" asp-action="Create">Yeni Referans</a>
+</div>
+
+<table class="table table-striped bg-white">
+    <thead>
+        <tr>
+            <th>Ad Soyad</th>
+            <th>Proje</th>
+            <th>Onay</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.FullName</td>
+                <td>@item.CompanyOrProject</td>
+                <td>@(item.IsApproved ? "Onaylı" : "Beklemede")</td>
+                <td class="text-end">
+                    <form asp-action="Approve" asp-route-id="@item.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Onayla</button>
+                    </form>
+                    <form asp-action="Reject" asp-route-id="@item.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-warning" type="submit">Kaldır</button>
+                    </form>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Sil</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
