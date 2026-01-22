@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessCenterProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260122132435_InteriorSiteInit")]
-    partial class InteriorSiteInit
+    [Migration("20260122143006_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
