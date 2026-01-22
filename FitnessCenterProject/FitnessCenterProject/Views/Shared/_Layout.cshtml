@@ -7,7 +7,6 @@
 
     <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
@@ -25,8 +24,9 @@
                     İç Mimar Portföy
                 </a>
 
-                <button class="navbar-toggler bg-dark text-white" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Menüyü aç/kapat">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -83,7 +83,6 @@
         </nav>
     </header>
 
-
     <!-- ============================= -->
     <!--           CONTENT             -->
     <!-- ============================= -->
@@ -96,11 +95,11 @@
         {
             <div class="alert alert-danger">@TempData["Error"]</div>
         }
-        <main role="main">
+
+        <main role="main" class="page-shell">
             @RenderBody()
         </main>
     </div>
-
 
     <!-- ============================= -->
     <!--            FOOTER             -->
@@ -110,14 +109,11 @@
         <a asp-controller="Home" asp-action="Privacy" class="text-muted small">Gizlilik Politikası</a>
     </footer>
 
-
     <!-- JS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-
 
 </body>
 </html>
