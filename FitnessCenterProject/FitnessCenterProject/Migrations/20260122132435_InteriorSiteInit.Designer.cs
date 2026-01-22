@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessCenterProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251206065949_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260122132435_InteriorSiteInit")]
+    partial class InteriorSiteInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,54 +25,6 @@ namespace FitnessCenterProject.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FitnessCenterProject.Models.AiRecommendation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BodyType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GeneratedImageUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("GeneratedPlan")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Goal")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<double?>("Height")
-                        .HasColumnType("float");
-
-                    b.Property<string>("RequestType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double?>("Weight")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AiRecommendations");
-                });
-
             modelBuilder.Entity("FitnessCenterProject.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -80,10 +32,6 @@ namespace FitnessCenterProject.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("BodyType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -95,13 +43,6 @@ namespace FitnessCenterProject.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Goal")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<double?>("Height")
-                        .HasColumnType("float");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -141,9 +82,6 @@ namespace FitnessCenterProject.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<double?>("Weight")
-                        .HasColumnType("float");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -157,7 +95,7 @@ namespace FitnessCenterProject.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessCenterProject.Models.Appointment", b =>
+            modelBuilder.Entity("FitnessCenterProject.Models.ContactMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,40 +103,41 @@ namespace FitnessCenterProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDateTime")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MemberId")
+                    b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType(" decimal(10,2)");
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime>("StartDateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Phone")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
-                    b.Property<int>("TrainerId")
-                        .HasColumnType("int");
+                    b.Property<string>("Subject")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.HasIndex("TrainerId");
-
-                    b.ToTable("Appointments");
+                    b.ToTable("ContactMessages");
                 });
 
-            modelBuilder.Entity("FitnessCenterProject.Models.FitnessCenter", b =>
+            modelBuilder.Entity("FitnessCenterProject.Models.PortfolioCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,26 +145,157 @@ namespace FitnessCenterProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("WorkingHours")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("FitnessCenters");
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("PortfolioCategories");
+                });
+
+            modelBuilder.Entity("FitnessCenterProject.Models.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double?>("AreaM2")
+                        .HasColumnType("float");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CoverImagePath")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<bool>("IsFeatured")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(220)
+                        .HasColumnType("nvarchar(220)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Year")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("FitnessCenterProject.Models.ProjectImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectImages");
+                });
+
+            modelBuilder.Entity("FitnessCenterProject.Models.QuoteRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BudgetRange")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DesiredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("ProjectType")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QuoteRequests");
                 });
 
             modelBuilder.Entity("FitnessCenterProject.Models.Service", b =>
@@ -237,31 +307,31 @@ namespace FitnessCenterProject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FitnessCenterId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<string>("IconName")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FitnessCenterId");
 
                     b.ToTable("Services");
                 });
 
-            modelBuilder.Entity("FitnessCenterProject.Models.Trainer", b =>
+            modelBuilder.Entity("FitnessCenterProject.Models.Testimonial", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -269,74 +339,32 @@ namespace FitnessCenterProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Bio")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Comment")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(1200)
+                        .HasColumnType("nvarchar(1200)");
 
-                    b.Property<int>("FitnessCenterId")
-                        .HasColumnType("int");
+                    b.Property<string>("CompanyOrProject")
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
 
-                    b.Property<string>("LastName")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
-                    b.Property<string>("Specialty")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("FitnessCenterId");
-
-                    b.ToTable("Trainers");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.TrainerAvailability", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DayOfWeek")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
-
-                    b.Property<int>("TrainerId")
+                    b.Property<int?>("Rating")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TrainerId");
-
-                    b.ToTable("TrainerAvailabilities");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.TrainerService", b =>
-                {
-                    b.Property<int>("TrainerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TrainerId", "ServiceId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("TrainerServices");
+                    b.ToTable("Testimonials");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -476,94 +504,26 @@ namespace FitnessCenterProject.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessCenterProject.Models.AiRecommendation", b =>
+            modelBuilder.Entity("FitnessCenterProject.Models.Project", b =>
                 {
-                    b.HasOne("FitnessCenterProject.Models.ApplicationUser", "User")
-                        .WithMany("AiRecommendations")
-                        .HasForeignKey("UserId")
+                    b.HasOne("FitnessCenterProject.Models.PortfolioCategory", "Category")
+                        .WithMany("Projects")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("FitnessCenterProject.Models.ProjectImage", b =>
+                {
+                    b.HasOne("FitnessCenterProject.Models.Project", "Project")
+                        .WithMany("Images")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.Appointment", b =>
-                {
-                    b.HasOne("FitnessCenterProject.Models.ApplicationUser", "Member")
-                        .WithMany("Appointments")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FitnessCenterProject.Models.Service", "Service")
-                        .WithMany("Appointments")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("FitnessCenterProject.Models.Trainer", "Trainer")
-                        .WithMany("Appointments")
-                        .HasForeignKey("TrainerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Member");
-
-                    b.Navigation("Service");
-
-                    b.Navigation("Trainer");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.Service", b =>
-                {
-                    b.HasOne("FitnessCenterProject.Models.FitnessCenter", "FitnessCenter")
-                        .WithMany("Services")
-                        .HasForeignKey("FitnessCenterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FitnessCenter");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.Trainer", b =>
-                {
-                    b.HasOne("FitnessCenterProject.Models.FitnessCenter", "FitnessCenter")
-                        .WithMany("Trainers")
-                        .HasForeignKey("FitnessCenterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FitnessCenter");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.TrainerAvailability", b =>
-                {
-                    b.HasOne("FitnessCenterProject.Models.Trainer", "Trainer")
-                        .WithMany("Availabilities")
-                        .HasForeignKey("TrainerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trainer");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.TrainerService", b =>
-                {
-                    b.HasOne("FitnessCenterProject.Models.Service", "Service")
-                        .WithMany("TrainerServices")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("FitnessCenterProject.Models.Trainer", "Trainer")
-                        .WithMany("TrainerServices")
-                        .HasForeignKey("TrainerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Service");
-
-                    b.Navigation("Trainer");
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -617,34 +577,14 @@ namespace FitnessCenterProject.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FitnessCenterProject.Models.ApplicationUser", b =>
+            modelBuilder.Entity("FitnessCenterProject.Models.PortfolioCategory", b =>
                 {
-                    b.Navigation("AiRecommendations");
-
-                    b.Navigation("Appointments");
+                    b.Navigation("Projects");
                 });
 
-            modelBuilder.Entity("FitnessCenterProject.Models.FitnessCenter", b =>
+            modelBuilder.Entity("FitnessCenterProject.Models.Project", b =>
                 {
-                    b.Navigation("Services");
-
-                    b.Navigation("Trainers");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.Service", b =>
-                {
-                    b.Navigation("Appointments");
-
-                    b.Navigation("TrainerServices");
-                });
-
-            modelBuilder.Entity("FitnessCenterProject.Models.Trainer", b =>
-                {
-                    b.Navigation("Appointments");
-
-                    b.Navigation("Availabilities");
-
-                    b.Navigation("TrainerServices");
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

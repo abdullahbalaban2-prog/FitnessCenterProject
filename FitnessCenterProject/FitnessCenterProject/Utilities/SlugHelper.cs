@@ -26,10 +26,10 @@ namespace FitnessCenterProject.Utilities
             }
 
             var cleaned = stringBuilder.ToString().Normalize(NormalizationForm.FormC);
-            cleaned = Regex.Replace(cleaned, "[^a-z0-9\s-]", string.Empty);
-            cleaned = Regex.Replace(cleaned, "\s+", " ").Trim();
+            cleaned = Regex.Replace(cleaned, @"[^a-z0-9\s-]", string.Empty);
+            cleaned = Regex.Replace(cleaned, @"\s+", " ").Trim();
             cleaned = cleaned.Replace(" ", "-");
-            cleaned = Regex.Replace(cleaned, "-+", "-");
+            cleaned = Regex.Replace(cleaned, @"-+", "-");
 
             return cleaned;
         }
