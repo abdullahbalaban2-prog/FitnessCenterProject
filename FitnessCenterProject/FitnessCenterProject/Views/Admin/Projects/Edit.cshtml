@@ -1,0 +1,94 @@
+@model FitnessCenterProject.ViewModels.ProjectUpsertViewModel
+@{
+    var project = ViewBag.Project as FitnessCenterProject.Models.Project;
+    ViewData["Title"] = "Proje Düzenle";
+}
+
+<h1 class="section-title mb-3">Proje Düzenle</h1>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="card p-4 mb-4">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="CategoryId" class="form-label">Kategori</label>
+            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories"></select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Location" class="form-label"></label>
+            <input asp-for="Location" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Year" class="form-label"></label>
+            <input asp-for="Year" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="AreaM2" class="form-label">Alan (m²)</label>
+            <input asp-for="AreaM2" class="form-control" />
+        </div>
+        <div class="col-12">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="col-12">
+            <label asp-for="CoverImage" class="form-label">Kapak Görseli</label>
+            <input asp-for="CoverImage" type="file" class="form-control" />
+            <span asp-validation-for="CoverImage" class="text-danger"></span>
+            @if (!string.IsNullOrWhiteSpace(project?.CoverImagePath))
+            {
+                <img src="@project.CoverImagePath" class="img-fluid rounded mt-3" alt="Kapak" />
+            }
+        </div>
+        <div class="col-12 form-check">
+            <input asp-for="IsFeatured" class="form-check-input" />
+            <label asp-for="IsFeatured" class="form-check-label">Öne çıkar</label>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-dark" type="submit">Güncelle</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Listeye Dön</a>
+        </div>
+    </div>
+</form>
+
+@if (project != null)
+{
+    <div class="card p-4">
+        <h5 class="section-title mb-3">Galeri Yönetimi</h5>
+        <form asp-action="UploadGallery" asp-route-projectId="@project.Id" method="post" enctype="multipart/form-data" class="mb-4">
+            <div class="mb-3">
+                <input type="file" name="images" multiple class="form-control" />
+            </div>
+            <button class="btn btn-outline-dark" type="submit">Görsel Ekle</button>
+        </form>
+
+        @if (project.Images != null && project.Images.Any())
+        {
+            <div class="row g-3">
+                @foreach (var image in project.Images.OrderBy(i => i.SortOrder))
+                {
+                    <div class="col-md-3 text-center">
+                        <img src="@image.ImagePath" class="img-fluid rounded mb-2" alt="Galeri" />
+                        <form asp-action="DeleteGalleryImage" asp-route-id="@image.Id" method="post">
+                            <button class="btn btn-sm btn-outline-danger" type="submit">Sil</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">Henüz galeri görseli eklenmedi.</p>
+        }
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

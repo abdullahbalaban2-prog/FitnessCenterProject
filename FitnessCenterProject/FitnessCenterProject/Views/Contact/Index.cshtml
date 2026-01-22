@@ -1,0 +1,89 @@
+@model FitnessCenterProject.ViewModels.ContactFormViewModel
+@inject IConfiguration Configuration
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
+    var contactEmail = Configuration["SiteSettings:ContactEmail"];
+    var contactPhone = Configuration["SiteSettings:ContactPhone"];
+    var contactPhoneLink = string.IsNullOrWhiteSpace(contactPhone)
+        ? string.Empty
+        : contactPhone.Replace(" ", string.Empty);
+    var contactEmailLink = string.IsNullOrWhiteSpace(contactEmail)
+        ? string.Empty
+        : $"mailto:{contactEmail}";
+    var contactAddress = Configuration["SiteSettings:ContactAddress"];
+    var mapUrl = Configuration["SiteSettings:GoogleMapsEmbedUrl"];
+}
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <h1 class="section-title mb-3">@Localizer["Heading"]</h1>
+        <p class="text-muted">@Localizer["Intro"]</p>
+        <form asp-action="Index" method="post" class="card p-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Subject" class="form-label"></label>
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Message" class="form-label"></label>
+                <textarea asp-for="Message" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+            <button class="btn btn-dark" type="submit">@Localizer["Submit"]</button>
+        </form>
+    </div>
+    <div class="col-lg-6">
+        <div class="card p-4 h-100">
+            <h5 class="section-title">@Localizer["ContactInfoTitle"]</h5>
+            <p class="text-muted">@Localizer["ContactInfoSubtitle"]</p>
+            @if (!string.IsNullOrWhiteSpace(contactEmail))
+            {
+                <p>
+                    <strong>@Localizer["EmailLabel"]:</strong>
+                    <a href="@contactEmailLink" class="text-decoration-none">@contactEmail</a>
+                </p>
+            }
+            @if (!string.IsNullOrWhiteSpace(contactPhone))
+            {
+                <p>
+                    <strong>@Localizer["PhoneLabel"]:</strong>
+                    <a href="tel:@contactPhoneLink" class="text-decoration-none">@contactPhone</a>
+                </p>
+            }
+            @if (!string.IsNullOrWhiteSpace(contactAddress))
+            {
+                <p><strong>@Localizer["AddressLabel"]:</strong> @contactAddress</p>
+            }
+            @if (!string.IsNullOrWhiteSpace(mapUrl))
+            {
+                <div class="mt-4">
+                    <iframe class="map-embed" src="@mapUrl" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="@Localizer["MapTitle"]"></iframe>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

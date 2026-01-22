@@ -1,52 +1,23 @@
-﻿@model IEnumerable<FitnessCenterProject.Models.Service>
+@model IEnumerable<FitnessCenterProject.Models.Service>
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Hizmetler";
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
 }
 
-<h1 class="arena-page-title neon-red mb-4">Hizmetler</h1>
+<h1 class="section-title mb-4">@Localizer["Heading"]</h1>
 
-<div class="d-flex justify-content-between mb-4">
-    <a asp-action="Create" class="btn arena-btn-lg-sm">
-        Yeni Hizmet Ekle
-    </a>
-</div>
-
-@if (!Model.Any())
-{
-    <div class="alert alert-warning fw-bold text-center">
-        Henüz hizmet tanımlanmamış.
-    </div>
-}
-else
-{
-    <div class="row g-4">
-
-        @foreach (var item in Model)
-        {
-            <div class="col-lg-4 col-md-6">
-                <div class="arena-card arena-service-card">
-
-                    <div class="arena-card-header">
-                        <h3 class="fw-bold neon-red">@item.Name</h3>
-                    </div>
-
-                    <div class="arena-card-body text-light">
-                        <p><strong>Açıklama:</strong> @item.Description</p>
-                        <p><strong>Süre:</strong> @item.DurationMinutes dk</p>
-                        <p><strong>Ücret:</strong> @item.Price ₺</p>
-                        <p><strong>Salon:</strong> @item.FitnessCenter?.Name</p>
-                    </div>
-
-                    <div class="arena-card-footer d-flex justify-content-between">
-                        <a class="arena-btn-sm" asp-action="Details" asp-route-id="@item.Id">Detay</a>
-                        <a class="arena-btn-sm-warning" asp-action="Edit" asp-route-id="@item.Id">Düzenle</a>
-                        <a class="arena-btn-sm-danger" asp-action="Delete" asp-route-id="@item.Id">Sil</a>
-                    </div>
-
+<div class="row g-4">
+    @foreach (var service in Model)
+    {
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@service.Title</h5>
+                    <p class="card-text text-muted">@service.Description</p>
                 </div>
             </div>
-        }
-
-    </div>
-}
+        </div>
+    }
+</div>

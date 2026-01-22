@@ -1,0 +1,50 @@
+@page
+@model FitnessCenterProject.Areas.Identity.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-side">
+            <h1 class="h3 fw-bold">Tekrar hoş geldiniz</h1>
+            <p class="mt-3">Projelerinizi ve teklif taleplerinizi yönetmek için giriş yapın.</p>
+            <ul class="mt-4 list-unstyled">
+                <li class="mb-2">✓ Portföy içeriklerini yönetin</li>
+                <li class="mb-2">✓ Gelen mesajları görüntüleyin</li>
+                <li>✓ Teklif taleplerine hızlıca dönüş yapın</li>
+            </ul>
+        </div>
+        <div class="auth-form">
+            <h2 class="h4 fw-bold mb-3">Yönetim Paneli</h2>
+            <p class="text-muted">Lütfen hesabınızla giriş yapın.</p>
+
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label"></label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Password" class="form-label"></label>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="Input.RememberMe" class="form-check-input" />
+                    <label asp-for="Input.RememberMe" class="form-check-label"></label>
+                </div>
+
+                <button type="submit" class="btn btn-dark">Giriş Yap</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

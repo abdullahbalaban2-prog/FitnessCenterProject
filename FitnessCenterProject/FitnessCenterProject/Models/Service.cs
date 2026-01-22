@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitnessCenterProject.Models
 {
@@ -8,27 +7,18 @@ namespace FitnessCenterProject.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public string Name { get; set; } = null!;
+        [StringLength(120)]
+        public string Title { get; set; } = string.Empty;
 
-        [StringLength(500)]
-        public string? Description { get; set; }
+        [Required]
+        [StringLength(1000)]
+        public string Description { get; set; } = string.Empty;
 
-        // süre(dk)
-        [Range(10,300 )]
-        public int DurationMinutes {  get; set; }
+        [StringLength(80)]
+        public string? IconName { get; set; }
 
-        // ücret
-        [Column(TypeName ="decimal(10,2)")]
-        [Range(0,100000)]
-        public decimal Price {  get; set; }
+        public int SortOrder { get; set; }
 
-        // Hangi salona ait
-        public int FitnessCenterId { get; set; }
-        public FitnessCenter? FitnessCenter { get; set; }
-
-        public ICollection<TrainerService>? TrainerServices { get; set; }
-        public ICollection<Appointment>? Appointments { get; set; }
-        
+        public bool IsActive { get; set; }
     }
 }

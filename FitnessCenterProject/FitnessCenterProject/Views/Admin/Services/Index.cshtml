@@ -1,0 +1,37 @@
+@model IEnumerable<FitnessCenterProject.Models.Service>
+
+@{
+    ViewData["Title"] = "Hizmetler";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="section-title">Hizmetler</h1>
+    <a class="btn btn-dark" asp-action="Create">Yeni Hizmet</a>
+</div>
+
+<table class="table table-striped bg-white">
+    <thead>
+        <tr>
+            <th>Başlık</th>
+            <th>Sıra</th>
+            <th>Aktif</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var service in Model)
+        {
+            <tr>
+                <td>@service.Title</td>
+                <td>@service.SortOrder</td>
+                <td>@(service.IsActive ? "Evet" : "Hayır")</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@service.Id">Düzenle</a>
+                    <form asp-action="Delete" asp-route-id="@service.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Sil</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,39 @@
+@model IEnumerable<FitnessCenterProject.Models.ContactMessage>
+
+@{
+    ViewData["Title"] = "Mesajlar";
+}
+
+<h1 class="section-title mb-3">Mesajlar</h1>
+
+<table class="table table-striped bg-white">
+    <thead>
+        <tr>
+            <th>Gönderen</th>
+            <th>Konu</th>
+            <th>Tarih</th>
+            <th>Durum</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var message in Model)
+        {
+            <tr>
+                <td>@message.FullName</td>
+                <td>@message.Subject</td>
+                <td>@message.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@(message.IsRead ? "Okundu" : "Yeni")</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@message.Id">Detay</a>
+                    <form asp-action="MarkRead" asp-route-id="@message.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Okundu</button>
+                    </form>
+                    <form asp-action="Delete" asp-route-id="@message.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Sil</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -2,16 +2,14 @@
 @using FitnessCenterProject.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark"
-               asp-area="Identity"
-               asp-page="/Account/Manage/Index"
-               title="Hesabım">
-                Merhaba @User.Identity?.Name
+            <a class="nav-link text-light" href="/admin" title="@SharedLocalizer["AdminPanel"]">
+                @SharedLocalizer["AdminPanel"]
             </a>
         </li>
         <li class="nav-item">
@@ -20,8 +18,8 @@
                   asp-page="/Account/Logout"
                   asp-route-returnUrl="@(Url.Action("Index", "Home", new { area = "" }))"
                   method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">
-                    Çıkış
+                <button type="submit" class="nav-link btn btn-link text-light">
+                    @SharedLocalizer["Logout"]
                 </button>
             </form>
         </li>
@@ -29,17 +27,10 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark"
-               asp-area="Identity"
-               asp-page="/Account/Register">
-                Kayıt Ol
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark"
+            <a class="nav-link text-light"
                asp-area="Identity"
                asp-page="/Account/Login">
-                Giriş Yap
+                @SharedLocalizer["LoginAdmin"]
             </a>
         </li>
     }

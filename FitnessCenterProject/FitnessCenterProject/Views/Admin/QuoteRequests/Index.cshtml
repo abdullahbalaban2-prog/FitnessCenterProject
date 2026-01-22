@@ -1,0 +1,39 @@
+@model IEnumerable<FitnessCenterProject.Models.QuoteRequest>
+
+@{
+    ViewData["Title"] = "Teklif Talepleri";
+}
+
+<h1 class="section-title mb-3">Teklif Talepleri</h1>
+
+<table class="table table-striped bg-white">
+    <thead>
+        <tr>
+            <th>Ad Soyad</th>
+            <th>Proje Tipi</th>
+            <th>Tarih</th>
+            <th>Durum</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quote in Model)
+        {
+            <tr>
+                <td>@quote.FullName</td>
+                <td>@quote.ProjectType</td>
+                <td>@quote.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@(quote.IsRead ? "Okundu" : "Yeni")</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@quote.Id">Detay</a>
+                    <form asp-action="MarkRead" asp-route-id="@quote.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Okundu</button>
+                    </form>
+                    <form asp-action="Delete" asp-route-id="@quote.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Sil</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

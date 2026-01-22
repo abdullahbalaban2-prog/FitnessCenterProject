@@ -1,93 +1,83 @@
-﻿@{
-    ViewData["Title"] = "Ana Sayfa";
+@model FitnessCenterProject.ViewModels.HomeViewModel
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
 }
 
-<div class="hero-section arena-hero text-center text-light py-5">
-    <h1 class="display-4 fw-bold neon-red mb-3">FITNESS ARENA</h1>
-    <p class="lead arena-subtitle mb-4">
-        Gücünü keşfet. Hedef belirle. Disiplinle ilerle.
-        Arena tarzı spor deneyimi ve akıllı randevu sistemi burada!
-    </p>
-
-    <div class="d-flex justify-content-center gap-3 mt-4">
-        <a class="btn arena-btn-lg" asp-controller="Appointments" asp-action="Create">
-            Randevu Al
-        </a>
-        <a class="btn arena-btn-outline" asp-controller="FitnessCenters" asp-action="Index">
-            Salonları İncele
-        </a>
+<section class="hero mb-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">@Localizer["HeroTitle"]</h1>
+        <p class="lead mt-3 mb-4">@Localizer["HeroSubtitle"]</p>
+        <a class="btn btn-light btn-lg me-2" asp-controller="Portfolio" asp-action="Index">@Localizer["HeroPortfolioCta"]</a>
+        <a class="btn btn-outline-light btn-lg" asp-controller="Quote" asp-action="Index">@Localizer["HeroQuoteCta"]</a>
     </div>
-</div>
+</section>
 
-<div class="container mt-5">
-
-    <h2 class="section-title mb-4 neon-border">Öne Çıkan Özellikler</h2>
-
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-title">@Localizer["FeaturedProjectsTitle"]</h2>
+        <a asp-controller="Portfolio" asp-action="Index" class="text-decoration-none">@Localizer["FeaturedProjectsAll"]</a>
+    </div>
     <div class="row g-4">
-
-        <div class="col-lg-4">
-            <div class="arena-card">
-                <h4 class="card-title">🏋️‍♂️ Profesyonel Salon Yönetimi</h4>
-                <p>
-                    Çalışma saatleri, hizmetler ve açıklamalar ile tamamen yönetilebilir spor salonu yapısı.
-                </p>
-                <a class="btn arena-btn-sm" asp-controller="FitnessCenters" asp-action="Index">
-                    Salonlara Git
-                </a>
+        @foreach (var project in Model.FeaturedProjects)
+        {
+            <div class="col-md-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrWhiteSpace(project.CoverImagePath))
+                    {
+                        <img src="@project.CoverImagePath" class="card-img-top" alt="@project.Title" />
+                    }
+                    <div class="card-body">
+                        <span class="badge badge-soft mb-2">@project.Category?.Name</span>
+                        <h5 class="card-title">@project.Title</h5>
+                        <p class="card-text text-muted">@project.Location</p>
+                        <a asp-controller="Portfolio" asp-action="Details" asp-route-slug="@project.Slug" class="stretched-link"></a>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="arena-card">
-                <h4 class="card-title">🥊 Akıllı Randevu Sistemi</h4>
-                <p>
-                    Antrenörlerin uygun saatlerine göre otomatik saat önerisi.
-                    MHRS benzeri hızlı & doğru randevu deneyimi.
-                </p>
-                <a class="btn arena-btn-sm" asp-controller="Appointments" asp-action="MyAppointments">
-                    Randevularım
-                </a>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="arena-card">
-                <h4 class="card-title">🤖 Yapay Zekâ Önerileri</h4>
-                <p>
-                    Boy, kilo, vücut tipi ve hedef bilgilerine göre
-                    kişiye özel antrenman + diyet önerileri.
-                </p>
-                <a class="btn arena-btn-sm" asp-controller="AiRecommendations" asp-action="Create">
-                    AI Önerisi Al
-                </a>
-            </div>
-        </div>
-
+        }
     </div>
-</div>
+</section>
 
-<div class="container mt-5">
-    <h2 class="section-title mb-4 neon-border">Spor Arena Deneyimi</h2>
-
+<section class="mb-5">
+    <h2 class="section-title mb-3">@Localizer["ServicesTitle"]</h2>
     <div class="row g-4">
-        <div class="col-md-6">
-            <div class="arena-info-box">
-                <h4 class="fw-bold neon-red">🔥 Sert antrenman, sağlam disiplin</h4>
-                <p>
-                    CrossFit, MMA ve fonksiyonel antrenmanları birleştiren hibrit spor sistemi ile
-                    güçlenmeye hazır ol.
-                </p>
+        @foreach (var service in Model.Services)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 p-3">
+                    <div class="card-body">
+                        <h5 class="card-title">@service.Title</h5>
+                        <p class="card-text text-muted">@service.Description</p>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="arena-info-box">
-                <h4 class="fw-bold neon-red">🎯 Performans odaklı yaklaşım</h4>
-                <p>
-                    Sistem, antrenörlerin uygunluğunu hesaplayarak çakışmaları engeller ve
-                    en verimli saatleri otomatik öne çıkarır.
-                </p>
-            </div>
-        </div>
+        }
     </div>
-</div>
+</section>
+
+<section class="mb-5">
+    <h2 class="section-title mb-3">@Localizer["TestimonialsTitle"]</h2>
+    <div class="row g-4">
+        @foreach (var testimonial in Model.Testimonials)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 p-3">
+                    <div class="card-body">
+                        <p class="card-text">“@testimonial.Comment”</p>
+                        <p class="fw-bold mb-0">@testimonial.FullName</p>
+                        <small class="text-muted">@testimonial.CompanyOrProject</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="text-center mb-5">
+    <h2 class="section-title mb-3">@Localizer["CtaTitle"]</h2>
+    <p class="text-muted">@Localizer["CtaSubtitle"]</p>
+    <a class="btn btn-dark btn-lg" asp-controller="Quote" asp-action="Index">@Localizer["CtaButton"]</a>
+</section>
