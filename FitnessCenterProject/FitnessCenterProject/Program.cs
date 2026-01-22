@@ -1,6 +1,5 @@
 ﻿using FitnessCenterProject.Data;
 using FitnessCenterProject.Models;
-using FitnessCenterProject.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,9 +32,6 @@ namespace FitnessCenterProject
             // MVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-
-            // AI Service registration (correct)
-            builder.Services.AddHttpClient<IAiService, GeminiService>();
 
             var app = builder.Build();
 

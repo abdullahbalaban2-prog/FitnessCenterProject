@@ -11,55 +11,37 @@ namespace FitnessCenterProject.Data
         {
         }
 
-        public DbSet<FitnessCenter> FitnessCenters { get; set; } = null!;
+        public DbSet<PortfolioCategory> PortfolioCategories { get; set; } = null!;
+        public DbSet<Project> Projects { get; set; } = null!;
+        public DbSet<ProjectImage> ProjectImages { get; set; } = null!;
         public DbSet<Service> Services { get; set; } = null!;
-        public DbSet<Trainer> Trainers { get; set; } = null!;
-        public DbSet<TrainerService> TrainerServices { get; set; } = null!;
-        public DbSet<TrainerAvailability> TrainerAvailabilities { get; set; } = null!;
-        public DbSet<Appointment> Appointments { get; set; } = null!;
-        public DbSet<AiRecommendation> AiRecommendations { get; set; } = null!;
+        public DbSet<Testimonial> Testimonials { get; set; } = null!;
+        public DbSet<ContactMessage> ContactMessages { get; set; } = null!;
+        public DbSet<QuoteRequest> QuoteRequests { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            // çoktan çoğa ilişki
-            builder.Entity<TrainerService>()
-                .HasKey(ts => new { ts.TrainerId, ts.ServiceId });
+            builder.Entity<Project>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Projects)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Appointment>()
-                .HasOne(a => a.Trainer)
-                .WithMany(t => t.Appointments)
-                .HasForeignKey(a => a.TrainerId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<PortfolioCategory>()
+                .HasIndex(c => c.Slug)
+                .IsUnique();
 
-            builder.Entity<Appointment>()
-                .HasOne(a => a.Service)
-                .WithMany(s => s.Appointments)
-                .HasForeignKey(a => a.ServiceId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Project>()
+                .HasIndex(p => p.Slug)
+                .IsUnique();
 
-            builder.Entity<TrainerService>()
-                .HasOne(ts => ts.Trainer)
-                .WithMany(t => t.TrainerServices)
-                .HasForeignKey(ts => ts.TrainerId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<TrainerService>()
-                .HasOne(ts => ts.Service)
-                .WithMany(s => s.TrainerServices)
-                .HasForeignKey(ts => ts.ServiceId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // ✅ GeneratedPlan truncation hatasını bitiren kısım
-            builder.Entity<AiRecommendation>()
-                .Property(x => x.GeneratedPlan)
-                .HasColumnType("nvarchar(max)");
-
-            // (İsteğe bağlı ama temiz) Image url uzunluğu
-            builder.Entity<AiRecommendation>()
-                .Property(x => x.GeneratedImageUrl)
-                .HasMaxLength(500);
+            builder.Entity<ProjectImage>()
+                .HasOne(pi => pi.Project)
+                .WithMany(p => p.Images)
+                .HasForeignKey(pi => pi.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

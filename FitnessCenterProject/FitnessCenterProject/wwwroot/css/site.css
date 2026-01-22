@@ -1,260 +1,63 @@
-﻿/* ===============================
-   GLOBAL CROSSFIT RED-BLACK THEME
-   =============================== */
-
-html, body {
-    background-color: #0b0b0b;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-    min-height: 100%;
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background-color: #f6f4f1;
+    color: #2b2b2b;
 }
 
-/* NAVBAR -------------------------------------------------------- */
-.navbar {
-    background-color: #111 !important;
-    border-bottom: 2px solid #e63946 !important;
+.navbar-brand {
+    letter-spacing: 1px;
 }
 
-.nav-link, .navbar-brand {
-    color: #eee !important;
-    font-weight: 600;
-}
-
-    .nav-link:hover, .navbar-brand:hover {
-        color: #e63946 !important;
-    }
-
-/* BUTTONS -------------------------------------------------------- */
-
-.btn-primary {
-    background-color: #e63946;
-    border-color: #e63946;
-    font-weight: 600;
-}
-
-    .btn-primary:hover {
-        background-color: #ff4d5a;
-        border-color: #ff4d5a;
-    }
-
-.btn-secondary {
-    background-color: #333;
+.hero {
+    background: linear-gradient(135deg, rgba(25, 24, 24, 0.92), rgba(63, 55, 51, 0.75));
     color: #fff;
+    padding: 120px 0;
+    border-radius: 18px;
 }
 
-    .btn-secondary:hover {
-        background-color: #444;
-    }
-
-/* CARDS ---------------------------------------------------------- */
-.card {
-    background-color: #1f1f1f;
-    border: 1px solid #333;
-    color: #fff;
-    border-radius: 8px;
-}
-
-.card-title {
-    color: #e63946;
+.section-title {
     font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
-.card-body {
-    color: #ccc;
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* TABLES --------------------------------------------------------- */
-
-.table {
-    color: white;
-    background-color: #1a1a1a;
+.card-img-top {
+    height: 220px;
+    object-fit: cover;
 }
 
-    .table thead {
-        background-color: #e63946;
-        color: white;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
+.badge-soft {
+    background: #f0e5dc;
+    color: #7a5a3a;
+}
 
-    .table tbody tr {
-        border-bottom: 1px solid #333;
-    }
-
-        .table tbody tr:hover {
-            background-color: #2a2a2a;
-        }
-
-    .table td, .table th {
-        padding: 14px 12px;
-    }
-
-/* FORMS ---------------------------------------------------------- */
+.footer {
+    background-color: #fff;
+}
 
 .form-control, .form-select {
-    background-color: #121212;
-    border: 1px solid #333;
-    color: white;
+    border-radius: 10px;
 }
 
-    .form-control:focus, .form-select:focus {
-        outline: none;
-        border-color: #e63946;
-        box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
-    }
-
-label {
-    color: #e63946;
-    font-weight: 600;
-}
-
-/* BADGES --------------------------------------------------------- */
-
-.badge {
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-weight: 600;
-}
-
-    .badge.bg-success {
-        background-color: #06d6a0 !important;
-    }
-
-    .badge.bg-warning {
-        background-color: #ffd166 !important;
-        color: #111 !important;
-    }
-
-    .badge.bg-danger {
-        background-color: #ef233c !important;
-    }
-
-/* ALERTS --------------------------------------------------------- */
-
-.alert-info {
-    background-color: #1b263b;
-    color: #a8dadc;
-    border-left: 4px solid #457b9d;
-}
-
-.alert-warning {
-    background-color: #2a1f1f;
-    border-left: 4px solid #e63946;
-}
-
-/* HOMEPAGE HERO -------------------------------------------------- */
-
-.bg-light {
-    background-color: #1a1a1a !important;
-}
-
-.display-5 {
-    color: #e63946;
-    font-weight: 800;
-}
-
-/* FOOTER ---------------------------------------------------------- */
-
-footer {
-    background-color: #111;
-    border-top: 2px solid #e63946;
-    color: #999;
-}
-
-    footer a {
-        color: #e63946 !important;
-    }
-
-/* SLOT BUTTONS (Randevu) ------------------------------------------ */
-
-.btn-slot {
-    background-color: #333;
-    border: 1px solid #555;
-    color: white;
-    padding: 10px 18px;
-    margin: 5px;
-    border-radius: 6px;
-}
-
-.btn-slot-available {
-    background-color: #06d6a0;
-    border-color: #06d6a0;
-    color: #111;
-    font-weight: bold;
-}
-
-    .btn-slot-available:hover {
-        background-color: #07f5b5;
-    }
-
-.btn-slot-unavailable {
-    background-color: #444;
-    color: #777;
-    border-color: #444;
-}
-
-/* CARDS LIST VIEW (Önerilerim sayfası vb.) ------------------------ */
-
-pre {
-    background-color: #111;
-    padding: 15px;
-    border-radius: 6px;
-    color: #f1f1f1;
-    border-left: 4px solid #e63946;
-}
-
-/* ANIMATIONS ------------------------------------------------------ */
-
-.card, .btn, .table {
-    transition: all 0.2s ease-in-out;
-}
-
-    .card:hover {
-        transform: translateY(-3px);
-    }
-
-/* LOGIN / REGISTER ----------------------------------------------- */
-
-input::placeholder {
-    color: #666 !important;
-}
-
-
-/* TRAINER AVATAR */
-.trainer-avatar, .trainer-avatar-large {
-    width: 95px;
-    height: 95px;
-    border-radius: 50%;
-    background: #111;
-    border: 2px solid #ff1f1f;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-}
-
-.trainer-avatar-large {
-    width: 130px;
-    height: 130px;
-    font-size: 42px;
-}
-
-.trainer-avatar i {
-    font-size: 32px;
-    color: #ff1f1f;
-}
-
-/* TRAINER CARDS */
-.arena-trainer-card {
-    background: #0d0d0d;
+.gallery-grid img {
     border-radius: 12px;
-    padding: 20px;
-    border: 1px solid #222;
-    transition: 0.25s ease;
-    text-align: center;
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
 }
 
-    .arena-trainer-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 0 20px #ff1f1f;
-    }
+.admin-card {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.alert {
+    border-radius: 12px;
+}

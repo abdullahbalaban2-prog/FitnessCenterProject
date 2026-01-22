@@ -1,8 +1,17 @@
-🏋️‍♂️ FitnessCenterProject — Kısa Özet
+INTERIOR ARCHITECT PORTFOLIO
 
-Bu proje, spor salonları için geliştirilmiş modern bir randevu ve yönetim sistemidir.
-Kullanıcılar; hizmetleri görüntüleyebilir, MHRS mantığıyla eğitmen uygunluklarına göre randevu alabilir, geçmiş randevularını görebilir ve yapay zekâ destekli kişisel spor önerileri oluşturabilir.
+ASP.NET Core MVC tabanlı bir **İç Mimar Portföy ve Teklif Yönetim Sistemi**.
 
-Yönetici (Admin) panelinde ise; salon, hizmet, eğitmen ve müsaitlik yönetimi yapılabilir, tüm randevular onaylanabilir veya reddedilebilir.
+TEKNOLOJİLER
+- ASP.NET Core 8.0 (MVC)
+- C#
+- Entity Framework Core
+- SQL Server
+- Bootstrap 5
 
-Proje, ASP.NET Core MVC, Entity Framework Core, REST API + LINQ, Gemini AI, ASP.NET Identity ve modern CrossFit temalı UI/UX kullanılarak geliştirilmiştir.
+ÖZELLİKLER
+- Portföy, proje ve galeri yönetimi
+- Hizmet ve kategori yönetimi
+- Ziyaretçi iletişim ve teklif formları
+- Referans (testimonial) onay akışı
+- Admin gösterge paneli ve içerik yönetimi
