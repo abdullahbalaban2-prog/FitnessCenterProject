@@ -3,15 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FitnessCenterProject</title>
+    <title>@ViewData["Title"] - İç Mimar Portföy</title>
 
     <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <!-- BEAST MODE CSS -->
-    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
-
-    <!-- CUSTOM SITE CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
@@ -21,12 +17,12 @@
     <!--          NAVBAR              -->
     <!-- ============================= -->
     <header>
-        <nav class="navbar navbar-expand-lg beast-navbar shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
             <div class="container-fluid">
 
                 <!-- LOGO -->
-                <a class="navbar-brand beast-logo" asp-controller="Home" asp-action="Index">
-                    <span class="text-red">FITNESS</span>CENTER
+                <a class="navbar-brand fw-bold text-uppercase" asp-controller="Home" asp-action="Index">
+                    İç Mimar Portföy
                 </a>
 
                 <button class="navbar-toggler bg-dark text-white" type="button"
@@ -40,45 +36,41 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                         <li class="nav-item">
-                            <a class="nav-link beast-link" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link beast-link" asp-controller="FitnessCenters" asp-action="Index">Salonlar</a>
+                            <a class="nav-link" asp-controller="Portfolio" asp-action="Index">Portföy</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link beast-link" asp-controller="Services" asp-action="Index">Hizmetler</a>
+                            <a class="nav-link" asp-controller="Services" asp-action="Index">Hizmetler</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link beast-link" asp-controller="Trainers" asp-action="Index">Antrenörler</a>
+                            <a class="nav-link" asp-controller="About" asp-action="Index">Hakkımda</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link beast-link" asp-controller="Appointments" asp-action="MyAppointments">Randevularım</a>
+                            <a class="nav-link" asp-controller="Contact" asp-action="Index">İletişim</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link beast-link" asp-controller="AiRecommendations" asp-action="MyRecommendations">
-                                AI Önerileri
-                            </a>
+                            <a class="nav-link" asp-controller="Quote" asp-action="Index">Teklif Al</a>
                         </li>
 
                         <!-- ADMIN MENU -->
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle beast-link"
+                                <a class="nav-link dropdown-toggle"
                                    href="#" role="button" data-bs-toggle="dropdown">
                                     Yönetim
                                 </a>
 
-                                <ul class="dropdown-menu beast-dropdown">
-                                    <li><a class="dropdown-item" asp-controller="FitnessCenters" asp-action="Index">Salon Yönetimi</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Services" asp-action="Index">Hizmet Yönetimi</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Trainers" asp-action="Index">Antrenör Yönetimi</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Appointments" asp-action="Index">Tüm Randevular</a></li>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/admin">Gösterge Paneli</a></li>
+                                    <li><a class="dropdown-item" href="/admin/projects">Projeler</a></li>
+                                    <li><a class="dropdown-item" href="/admin/categories">Kategoriler</a></li>
+                                    <li><a class="dropdown-item" href="/admin/services">Hizmetler</a></li>
+                                    <li><a class="dropdown-item" href="/admin/testimonials">Referanslar</a></li>
+                                    <li><a class="dropdown-item" href="/admin/messages">Mesajlar</a></li>
+                                    <li><a class="dropdown-item" href="/admin/quotes">Teklif Talepleri</a></li>
                                 </ul>
                             </li>
                         }
@@ -96,6 +88,14 @@
     <!--           CONTENT             -->
     <!-- ============================= -->
     <div class="container py-4">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
         <main role="main">
             @RenderBody()
         </main>
@@ -105,13 +105,9 @@
     <!-- ============================= -->
     <!--            FOOTER             -->
     <!-- ============================= -->
-    <footer class="footer text-center py-3 mt-4">
-        <p class="mb-0">
-            © 21/12/2025 - 09:33:21 – <span class="text-red">FitnessCenterProject</span> | CrossFit Beast Mode UI
-        </p>
-        <a asp-controller="Home" asp-action="Privacy" class="text-muted small">
-            Gizlilik Politikası
-        </a>
+    <footer class="footer text-center py-3 mt-4 border-top">
+        <p class="mb-1">© @DateTime.Now.Year İç Mimar Portföy</p>
+        <a asp-controller="Home" asp-action="Privacy" class="text-muted small">Gizlilik Politikası</a>
     </footer>
 
 

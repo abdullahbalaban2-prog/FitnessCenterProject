@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FitnessCenterProject.Models
+namespace FitnessCenterProject.ViewModels
 {
-    public class Service
+    public class ServiceViewModel
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required]
         [StringLength(120)]

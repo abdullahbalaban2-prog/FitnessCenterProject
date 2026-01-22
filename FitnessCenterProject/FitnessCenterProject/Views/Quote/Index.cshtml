@@ -1,0 +1,66 @@
+@model FitnessCenterProject.ViewModels.QuoteRequestViewModel
+
+@{
+    ViewData["Title"] = "Teklif Al";
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <h1 class="section-title mb-3">Teklif Al</h1>
+        <p class="text-muted">Proje detaylarınızı paylaşın, size özel teklif hazırlayalım.</p>
+        <form asp-action="Index" method="post" class="card p-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ProjectType" class="form-label"></label>
+                <input asp-for="ProjectType" class="form-control" />
+                <span asp-validation-for="ProjectType" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="BudgetRange" class="form-label"></label>
+                <input asp-for="BudgetRange" class="form-control" />
+                <span asp-validation-for="BudgetRange" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="DesiredDate" class="form-label"></label>
+                <input asp-for="DesiredDate" type="date" class="form-control" />
+                <span asp-validation-for="DesiredDate" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Message" class="form-label"></label>
+                <textarea asp-for="Message" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+            <button class="btn btn-dark" type="submit">Gönder</button>
+        </form>
+    </div>
+    <div class="col-lg-5">
+        <div class="card p-4 h-100">
+            <h5 class="section-title">Süreç Nasıl İşler?</h5>
+            <ol class="text-muted">
+                <li>Talebinizi alıyoruz.</li>
+                <li>Keşif ve brief görüşmesi planlıyoruz.</li>
+                <li>Tasarım ve uygulama teklifini paylaşıyoruz.</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
