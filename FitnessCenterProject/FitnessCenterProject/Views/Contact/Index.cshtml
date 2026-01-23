@@ -1,13 +1,26 @@
 @model FitnessCenterProject.ViewModels.ContactFormViewModel
+@inject IConfiguration Configuration
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "İletişim";
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
+    var contactEmail = Configuration["SiteSettings:ContactEmail"];
+    var contactPhone = Configuration["SiteSettings:ContactPhone"];
+    var contactPhoneLink = string.IsNullOrWhiteSpace(contactPhone)
+        ? string.Empty
+        : contactPhone.Replace(" ", string.Empty);
+    var contactEmailLink = string.IsNullOrWhiteSpace(contactEmail)
+        ? string.Empty
+        : $"mailto:{contactEmail}";
+    var contactAddress = Configuration["SiteSettings:ContactAddress"];
+    var mapUrl = Configuration["SiteSettings:GoogleMapsEmbedUrl"];
 }
 
 <div class="row g-4">
     <div class="col-lg-6">
-        <h1 class="section-title mb-3">İletişim</h1>
-        <p class="text-muted">Projeleriniz hakkında konuşmak için aşağıdaki formu doldurun.</p>
+        <h1 class="section-title mb-3">@Localizer["Heading"]</h1>
+        <p class="text-muted">@Localizer["Intro"]</p>
         <form asp-action="Index" method="post" class="card p-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -36,16 +49,37 @@
                 <textarea asp-for="Message" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="Message" class="text-danger"></span>
             </div>
-            <button class="btn btn-dark" type="submit">Gönder</button>
+            <button class="btn btn-dark" type="submit">@Localizer["Submit"]</button>
         </form>
     </div>
     <div class="col-lg-6">
         <div class="card p-4 h-100">
-            <h5 class="section-title">İletişim Bilgileri</h5>
-            <p class="text-muted">Hafta içi 09:00 - 18:00 saatlerinde ulaşabilirsiniz.</p>
-            <p><strong>E-posta:</strong> interior@studio.com</p>
-            <p><strong>Telefon:</strong> +90 555 000 00 00</p>
-            <p><strong>Adres:</strong> İstanbul, Türkiye</p>
+            <h5 class="section-title">@Localizer["ContactInfoTitle"]</h5>
+            <p class="text-muted">@Localizer["ContactInfoSubtitle"]</p>
+            @if (!string.IsNullOrWhiteSpace(contactEmail))
+            {
+                <p>
+                    <strong>@Localizer["EmailLabel"]:</strong>
+                    <a href="@contactEmailLink" class="text-decoration-none">@contactEmail</a>
+                </p>
+            }
+            @if (!string.IsNullOrWhiteSpace(contactPhone))
+            {
+                <p>
+                    <strong>@Localizer["PhoneLabel"]:</strong>
+                    <a href="tel:@contactPhoneLink" class="text-decoration-none">@contactPhone</a>
+                </p>
+            }
+            @if (!string.IsNullOrWhiteSpace(contactAddress))
+            {
+                <p><strong>@Localizer["AddressLabel"]:</strong> @contactAddress</p>
+            }
+            @if (!string.IsNullOrWhiteSpace(mapUrl))
+            {
+                <div class="mt-4">
+                    <iframe class="map-embed" src="@mapUrl" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="@Localizer["MapTitle"]"></iframe>
+                </div>
+            }
         </div>
     </div>
 </div>

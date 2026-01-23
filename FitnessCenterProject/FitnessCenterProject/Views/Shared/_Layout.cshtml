@@ -1,12 +1,68 @@
-﻿<!DOCTYPE html>
-<html lang="tr">
+﻿@using System
+@using System.Globalization
+@using Microsoft.AspNetCore.WebUtilities
+@inject IConfiguration Configuration
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@{
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
+    @{
+        var baseUrl = Configuration["SiteSettings:BaseUrl"];
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+        }
+
+        baseUrl = baseUrl.TrimEnd('/');
+        var currentPath = Context.Request.Path.ToString();
+        var currentQuery = Context.Request.QueryString.HasValue ? Context.Request.QueryString.Value : string.Empty;
+        var pageTitle = ViewData["Title"]?.ToString() ?? SharedLocalizer["SiteName"];
+        var metaTitle = ViewData["MetaTitle"]?.ToString() ?? pageTitle;
+        var metaDescription = ViewData["MetaDescription"]?.ToString() ?? SharedLocalizer["DefaultMetaDescription"];
+        var canonical = ViewData["Canonical"]?.ToString() ?? $"{baseUrl}{currentPath}{currentQuery}";
+        var ogType = ViewData["OgType"]?.ToString() ?? "website";
+        var ogImage = ViewData["OgImage"]?.ToString() ?? Configuration["SiteSettings:DefaultOgImage"];
+        if (!string.IsNullOrWhiteSpace(ogImage) && !ogImage.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+        {
+            ogImage = $"{baseUrl}{ogImage}";
+        }
+
+        var ogLocale = CultureInfo.CurrentUICulture.Name.Replace('-', '_');
+        var robots = (Context.Request.Path.StartsWithSegments("/admin") || Context.Request.Path.StartsWithSegments("/Identity"))
+            ? "noindex, nofollow"
+            : "index, follow";
+        var returnUrl = $"{currentPath}{currentQuery}";
+        var trUrl = QueryHelpers.AddQueryString($"{baseUrl}{currentPath}", "culture", "tr");
+        var enUrl = QueryHelpers.AddQueryString($"{baseUrl}{currentPath}", "culture", "en");
+    }
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - İç Mimar Portföy</title>
+    <title>@pageTitle - @SharedLocalizer["SiteName"]</title>
+    <meta name="description" content="@metaDescription" />
+    <meta name="robots" content="@robots" />
+    <link rel="canonical" href="@canonical" />
+    <meta property="og:title" content="@metaTitle" />
+    <meta property="og:description" content="@metaDescription" />
+    <meta property="og:type" content="@ogType" />
+    <meta property="og:url" content="@canonical" />
+    <meta property="og:image" content="@ogImage" />
+    <meta property="og:site_name" content="@SharedLocalizer["SiteName"]" />
+    <meta property="og:locale" content="@ogLocale" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@metaTitle" />
+    <meta name="twitter:description" content="@metaDescription" />
+    <meta name="twitter:image" content="@ogImage" />
+    <link rel="alternate" hreflang="tr" href="@trUrl" />
+    <link rel="alternate" hreflang="en" href="@enUrl" />
 
     <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
@@ -21,12 +77,11 @@
 
                 <!-- LOGO -->
                 <a class="navbar-brand fw-bold text-uppercase" asp-controller="Home" asp-action="Index">
-                    İç Mimar Portföy
+                    @SharedLocalizer["SiteName"]
                 </a>
 
-                <button class="navbar-toggler" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#mainNav"
-                        aria-controls="mainNav" aria-expanded="false" aria-label="Menüyü aç/kapat">
+                <button class="navbar-toggler bg-dark text-white" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -36,22 +91,22 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">@SharedLocalizer["NavHome"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Portfolio" asp-action="Index">Portföy</a>
+                            <a class="nav-link" asp-controller="Portfolio" asp-action="Index">@SharedLocalizer["NavPortfolio"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Services" asp-action="Index">Hizmetler</a>
+                            <a class="nav-link" asp-controller="Services" asp-action="Index">@SharedLocalizer["NavServices"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="About" asp-action="Index">Hakkımda</a>
+                            <a class="nav-link" asp-controller="About" asp-action="Index">@SharedLocalizer["NavAbout"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Contact" asp-action="Index">İletişim</a>
+                            <a class="nav-link" asp-controller="Contact" asp-action="Index">@SharedLocalizer["NavContact"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Quote" asp-action="Index">Teklif Al</a>
+                            <a class="nav-link" asp-controller="Quote" asp-action="Index">@SharedLocalizer["NavQuote"]</a>
                         </li>
 
                         <!-- ADMIN MENU -->
@@ -60,28 +115,40 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle"
                                    href="#" role="button" data-bs-toggle="dropdown">
-                                    Yönetim
+                                    @SharedLocalizer["NavAdmin"]
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/admin">Gösterge Paneli</a></li>
-                                    <li><a class="dropdown-item" href="/admin/projects">Projeler</a></li>
-                                    <li><a class="dropdown-item" href="/admin/categories">Kategoriler</a></li>
-                                    <li><a class="dropdown-item" href="/admin/services">Hizmetler</a></li>
-                                    <li><a class="dropdown-item" href="/admin/testimonials">Referanslar</a></li>
-                                    <li><a class="dropdown-item" href="/admin/messages">Mesajlar</a></li>
-                                    <li><a class="dropdown-item" href="/admin/quotes">Teklif Talepleri</a></li>
+                                    <li><a class="dropdown-item" href="/admin">@SharedLocalizer["NavAdminDashboard"]</a></li>
+                                    <li><a class="dropdown-item" href="/admin/projects">@SharedLocalizer["NavAdminProjects"]</a></li>
+                                    <li><a class="dropdown-item" href="/admin/categories">@SharedLocalizer["NavAdminCategories"]</a></li>
+                                    <li><a class="dropdown-item" href="/admin/services">@SharedLocalizer["NavAdminServices"]</a></li>
+                                    <li><a class="dropdown-item" href="/admin/testimonials">@SharedLocalizer["NavAdminTestimonials"]</a></li>
+                                    <li><a class="dropdown-item" href="/admin/messages">@SharedLocalizer["NavAdminMessages"]</a></li>
+                                    <li><a class="dropdown-item" href="/admin/quotes">@SharedLocalizer["NavAdminQuotes"]</a></li>
                                 </ul>
                             </li>
                         }
                     </ul>
 
                     <!-- RIGHT SIDE USER LOGIN -->
-                    <partial name="_LoginPartial" />
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="language-switcher">
+                            <a class="language-link" asp-controller="Localization" asp-action="SetLanguage" asp-route-culture="tr" asp-route-returnUrl="@returnUrl">
+                                @SharedLocalizer["LanguageTR"]
+                            </a>
+                            <span class="language-divider">/</span>
+                            <a class="language-link" asp-controller="Localization" asp-action="SetLanguage" asp-route-culture="en" asp-route-returnUrl="@returnUrl">
+                                @SharedLocalizer["LanguageEN"]
+                            </a>
+                        </div>
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
+
 
     <!-- ============================= -->
     <!--           CONTENT             -->
@@ -95,25 +162,39 @@
         {
             <div class="alert alert-danger">@TempData["Error"]</div>
         }
-
         <main role="main" class="page-shell">
             @RenderBody()
         </main>
     </div>
 
+
     <!-- ============================= -->
     <!--            FOOTER             -->
     <!-- ============================= -->
     <footer class="footer text-center py-3 mt-4 border-top">
-        <p class="mb-1">© @DateTime.Now.Year İç Mimar Portföy</p>
-        <a asp-controller="Home" asp-action="Privacy" class="text-muted small">Gizlilik Politikası</a>
+        <p class="mb-1">© @DateTime.Now.Year @SharedLocalizer["FooterCopyright"]</p>
+        <a asp-controller="Home" asp-action="Privacy" class="text-muted small">@SharedLocalizer["FooterPrivacy"]</a>
     </footer>
+
+    @if (!string.IsNullOrWhiteSpace(Configuration["SiteSettings:WhatsAppPhone"]))
+    {
+        var whatsappMessage = Configuration["SiteSettings:WhatsAppMessage"] ?? string.Empty;
+        var whatsappPhone = Configuration["SiteSettings:WhatsAppPhone"] ?? string.Empty;
+        var whatsappUrl = $"https://wa.me/{whatsappPhone}?text={Uri.EscapeDataString(whatsappMessage)}";
+
+        <a class="whatsapp-float" href="@whatsappUrl" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <span>WhatsApp</span>
+        </a>
+    }
+
 
     <!-- JS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
 
 </body>
 </html>

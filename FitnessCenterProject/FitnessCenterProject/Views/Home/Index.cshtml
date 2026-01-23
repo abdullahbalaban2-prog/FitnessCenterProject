@@ -1,22 +1,24 @@
 @model FitnessCenterProject.ViewModels.HomeViewModel
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Ana Sayfa";
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
 }
 
 <section class="hero mb-5">
     <div class="container text-center">
-        <h1 class="display-4 fw-bold">Mekânlarınıza Özgün Bir İmza</h1>
-        <p class="lead mt-3 mb-4">Yaşam alanlarını estetik, işlev ve zarafetle buluşturan iç mimari çözümler sunuyorum.</p>
-        <a class="btn btn-light btn-lg me-2" asp-controller="Portfolio" asp-action="Index">Portföyü İncele</a>
-        <a class="btn btn-outline-light btn-lg" asp-controller="Quote" asp-action="Index">Teklif Al</a>
+        <h1 class="display-4 fw-bold">@Localizer["HeroTitle"]</h1>
+        <p class="lead mt-3 mb-4">@Localizer["HeroSubtitle"]</p>
+        <a class="btn btn-light btn-lg me-2" asp-controller="Portfolio" asp-action="Index">@Localizer["HeroPortfolioCta"]</a>
+        <a class="btn btn-outline-light btn-lg" asp-controller="Quote" asp-action="Index">@Localizer["HeroQuoteCta"]</a>
     </div>
 </section>
 
 <section class="mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="section-title">Öne Çıkan Projeler</h2>
-        <a asp-controller="Portfolio" asp-action="Index" class="text-decoration-none">Tümünü Gör</a>
+        <h2 class="section-title">@Localizer["FeaturedProjectsTitle"]</h2>
+        <a asp-controller="Portfolio" asp-action="Index" class="text-decoration-none">@Localizer["FeaturedProjectsAll"]</a>
     </div>
     <div class="row g-4">
         @foreach (var project in Model.FeaturedProjects)
@@ -40,7 +42,7 @@
 </section>
 
 <section class="mb-5">
-    <h2 class="section-title mb-3">Hizmetler</h2>
+    <h2 class="section-title mb-3">@Localizer["ServicesTitle"]</h2>
     <div class="row g-4">
         @foreach (var service in Model.Services)
         {
@@ -57,7 +59,7 @@
 </section>
 
 <section class="mb-5">
-    <h2 class="section-title mb-3">Danışan Yorumları</h2>
+    <h2 class="section-title mb-3">@Localizer["TestimonialsTitle"]</h2>
     <div class="row g-4">
         @foreach (var testimonial in Model.Testimonials)
         {
@@ -75,7 +77,7 @@
 </section>
 
 <section class="text-center mb-5">
-    <h2 class="section-title mb-3">Projeniz için birlikte çalışalım</h2>
-    <p class="text-muted">İhtiyaçlarınızı birlikte değerlendirelim ve size özel teklif hazırlayalım.</p>
-    <a class="btn btn-dark btn-lg" asp-controller="Quote" asp-action="Index">Teklif Al</a>
+    <h2 class="section-title mb-3">@Localizer["CtaTitle"]</h2>
+    <p class="text-muted">@Localizer["CtaSubtitle"]</p>
+    <a class="btn btn-dark btn-lg" asp-controller="Quote" asp-action="Index">@Localizer["CtaButton"]</a>
 </section>

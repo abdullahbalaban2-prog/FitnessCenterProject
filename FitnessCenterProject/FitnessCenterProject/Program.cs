@@ -1,7 +1,9 @@
 ﻿using FitnessCenterProject.Data;
 using FitnessCenterProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace FitnessCenterProject
 {
@@ -29,10 +31,14 @@ namespace FitnessCenterProject
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            // MVC
-            builder.Services.AddControllersWithViews();
-            builder.Services.AddRazorPages();
+            // Localization
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
+            builder.Services
+                .AddControllersWithViews()
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization();
+            builder.Services.AddRazorPages();
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
@@ -43,6 +49,24 @@ namespace FitnessCenterProject
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("tr"),
+                new CultureInfo("en")
+            };
+
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("tr"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            };
+
+            localizationOptions.RequestCultureProviders.Insert(0, new QueryStringRequestCultureProvider());
+
+            app.UseRequestLocalization(localizationOptions);
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
