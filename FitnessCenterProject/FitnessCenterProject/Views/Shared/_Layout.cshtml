@@ -3,6 +3,10 @@
 @using Microsoft.AspNetCore.WebUtilities
 @inject IConfiguration Configuration
 @inject IStringLocalizer<SharedResource> SharedLocalizer
+@{
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
 <!DOCTYPE html>
 <html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
