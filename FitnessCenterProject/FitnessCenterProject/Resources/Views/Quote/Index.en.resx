@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Get a Quote</value>
+  </data>
+  <data name="MetaDescription" xml:space="preserve">
+    <value>Quote request form and process details for interior design projects.</value>
+  </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Get a Quote</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Share your project details and receive a tailored proposal.</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="ProcessTitle" xml:space="preserve">
+    <value>How the Process Works</value>
+  </data>
+  <data name="ProcessStepOne" xml:space="preserve">
+    <value>We review your request.</value>
+  </data>
+  <data name="ProcessStepTwo" xml:space="preserve">
+    <value>We schedule a discovery and briefing call.</value>
+  </data>
+  <data name="ProcessStepThree" xml:space="preserve">
+    <value>We share the design and execution proposal.</value>
+  </data>
+</root>

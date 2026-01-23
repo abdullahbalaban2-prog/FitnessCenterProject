@@ -1,13 +1,15 @@
 @model FitnessCenterProject.ViewModels.QuoteRequestViewModel
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Teklif Al";
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
 }
 
 <div class="row g-4">
     <div class="col-lg-7">
-        <h1 class="section-title mb-3">Teklif Al</h1>
-        <p class="text-muted">Proje detaylarınızı paylaşın, size özel teklif hazırlayalım.</p>
+        <h1 class="section-title mb-3">@Localizer["Heading"]</h1>
+        <p class="text-muted">@Localizer["Intro"]</p>
         <form asp-action="Index" method="post" class="card p-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -46,16 +48,16 @@
                 <textarea asp-for="Message" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="Message" class="text-danger"></span>
             </div>
-            <button class="btn btn-dark" type="submit">Gönder</button>
+            <button class="btn btn-dark" type="submit">@Localizer["Submit"]</button>
         </form>
     </div>
     <div class="col-lg-5">
         <div class="card p-4 h-100">
-            <h5 class="section-title">Süreç Nasıl İşler?</h5>
+            <h5 class="section-title">@Localizer["ProcessTitle"]</h5>
             <ol class="text-muted">
-                <li>Talebinizi alıyoruz.</li>
-                <li>Keşif ve brief görüşmesi planlıyoruz.</li>
-                <li>Tasarım ve uygulama teklifini paylaşıyoruz.</li>
+                <li>@Localizer["ProcessStepOne"]</li>
+                <li>@Localizer["ProcessStepTwo"]</li>
+                <li>@Localizer["ProcessStepThree"]</li>
             </ol>
         </div>
     </div>

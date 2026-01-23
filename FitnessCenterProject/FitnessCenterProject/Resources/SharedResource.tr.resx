@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SiteName" xml:space="preserve">
+    <value>İç Mimar Portföy</value>
+  </data>
+  <data name="DefaultMetaDescription" xml:space="preserve">
+    <value>Premium iç mimari çözümler, seçili portföy ve kişiye özel teklif hizmetleri.</value>
+  </data>
+  <data name="NavHome" xml:space="preserve">
+    <value>Ana Sayfa</value>
+  </data>
+  <data name="NavPortfolio" xml:space="preserve">
+    <value>Portföy</value>
+  </data>
+  <data name="NavServices" xml:space="preserve">
+    <value>Hizmetler</value>
+  </data>
+  <data name="NavAbout" xml:space="preserve">
+    <value>Hakkımda</value>
+  </data>
+  <data name="NavContact" xml:space="preserve">
+    <value>İletişim</value>
+  </data>
+  <data name="NavQuote" xml:space="preserve">
+    <value>Teklif Al</value>
+  </data>
+  <data name="NavAdmin" xml:space="preserve">
+    <value>Yönetim</value>
+  </data>
+  <data name="NavAdminDashboard" xml:space="preserve">
+    <value>Gösterge Paneli</value>
+  </data>
+  <data name="NavAdminProjects" xml:space="preserve">
+    <value>Projeler</value>
+  </data>
+  <data name="NavAdminCategories" xml:space="preserve">
+    <value>Kategoriler</value>
+  </data>
+  <data name="NavAdminServices" xml:space="preserve">
+    <value>Hizmetler</value>
+  </data>
+  <data name="NavAdminTestimonials" xml:space="preserve">
+    <value>Referanslar</value>
+  </data>
+  <data name="NavAdminMessages" xml:space="preserve">
+    <value>Mesajlar</value>
+  </data>
+  <data name="NavAdminQuotes" xml:space="preserve">
+    <value>Teklif Talepleri</value>
+  </data>
+  <data name="AdminPanel" xml:space="preserve">
+    <value>Yönetim Paneli</value>
+  </data>
+  <data name="LoginAdmin" xml:space="preserve">
+    <value>Admin Giriş</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Çıkış</value>
+  </data>
+  <data name="LanguageTR" xml:space="preserve">
+    <value>TR</value>
+  </data>
+  <data name="LanguageEN" xml:space="preserve">
+    <value>EN</value>
+  </data>
+  <data name="FooterPrivacy" xml:space="preserve">
+    <value>Gizlilik Politikası</value>
+  </data>
+  <data name="FooterCopyright" xml:space="preserve">
+    <value>İç Mimar Portföy</value>
+  </data>
+</root>

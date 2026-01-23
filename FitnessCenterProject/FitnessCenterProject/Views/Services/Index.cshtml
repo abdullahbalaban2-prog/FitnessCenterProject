@@ -1,10 +1,12 @@
 @model IEnumerable<FitnessCenterProject.Models.Service>
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Hizmetler";
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
 }
 
-<h1 class="section-title mb-4">Hizmetler</h1>
+<h1 class="section-title mb-4">@Localizer["Heading"]</h1>
 
 <div class="row g-4">
     @foreach (var service in Model)

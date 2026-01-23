@@ -1,11 +1,17 @@
 @model FitnessCenterProject.Models.Project
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = Model.Title;
+    ViewData["MetaDescription"] = !string.IsNullOrWhiteSpace(Model.Description) && Model.Description.Length > 160
+        ? $"{Model.Description.Substring(0, 157)}..."
+        : Model.Description;
+    ViewData["OgType"] = "article";
+    ViewData["OgImage"] = Model.CoverImagePath;
 }
 
 <div class="mb-4">
-    <a asp-action="Index" class="text-decoration-none">← Portföye Dön</a>
+    <a asp-action="Index" class="text-decoration-none">← @Localizer["BackToPortfolio"]</a>
 </div>
 
 <div class="row g-4">
@@ -16,7 +22,7 @@
         }
         else
         {
-            <div class="card p-5 text-center">Kapak görseli eklenmedi.</div>
+            <div class="card p-5 text-center">@Localizer["NoCoverImage"]</div>
         }
     </div>
     <div class="col-lg-6">
@@ -40,7 +46,7 @@
 @if (Model.Images != null && Model.Images.Any())
 {
     <hr class="my-5" />
-    <h2 class="section-title mb-3">Proje Galerisi</h2>
+    <h2 class="section-title mb-3">@Localizer["GalleryTitle"]</h2>
     <div class="row g-4 gallery-grid">
         @foreach (var image in Model.Images.OrderBy(i => i.SortOrder))
         {

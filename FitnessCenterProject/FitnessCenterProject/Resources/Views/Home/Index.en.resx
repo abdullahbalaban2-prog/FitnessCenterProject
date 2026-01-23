@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="MetaDescription" xml:space="preserve">
+    <value>Premium interior design projects, featured work, and tailored quotes.</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>A Signature for Your Spaces</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Interior solutions that blend aesthetics, function, and elegance for modern living.</value>
+  </data>
+  <data name="HeroPortfolioCta" xml:space="preserve">
+    <value>View Portfolio</value>
+  </data>
+  <data name="HeroQuoteCta" xml:space="preserve">
+    <value>Get a Quote</value>
+  </data>
+  <data name="FeaturedProjectsTitle" xml:space="preserve">
+    <value>Featured Projects</value>
+  </data>
+  <data name="FeaturedProjectsAll" xml:space="preserve">
+    <value>View All</value>
+  </data>
+  <data name="ServicesTitle" xml:space="preserve">
+    <value>Services</value>
+  </data>
+  <data name="TestimonialsTitle" xml:space="preserve">
+    <value>Client Testimonials</value>
+  </data>
+  <data name="CtaTitle" xml:space="preserve">
+    <value>Let’s shape your next project</value>
+  </data>
+  <data name="CtaSubtitle" xml:space="preserve">
+    <value>Let’s review your needs together and craft a tailored proposal.</value>
+  </data>
+  <data name="CtaButton" xml:space="preserve">
+    <value>Get a Quote</value>
+  </data>
+</root>
